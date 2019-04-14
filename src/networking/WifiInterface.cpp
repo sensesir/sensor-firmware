@@ -10,7 +10,7 @@
 
 #include "WifiInterface.hpp"
 
-IPAddress SensorWifi::connectToWifi(const char* ssid, const char* password, const int* gatewayIPArr, const int* subnetIPArr, const int staticOctet){
+void SensorWifi::connectToWifi(const char* ssid, const char* password){
 	// Attempt to create static IP
 	WiFi.mode(WIFI_STA);
 
@@ -32,12 +32,10 @@ IPAddress SensorWifi::connectToWifi(const char* ssid, const char* password, cons
 	
 	// State all info
 	delay(1000);
-	IPAddress ipAddress = WiFi.localIP();
 	printNetworkAllocations();
 
 	// Indicate connected state on LED
 	digitalWrite(WIFI_LED, HIGH);
-	return ipAddress;
 }
 
 void SensorWifi::printNetworkAllocations() {
@@ -61,7 +59,7 @@ IPAddress SensorWifi::setWiFiReconnectingState(){
 
 	// Reconnected
 	Serial.println("WIFI INTERFACE: Successfully reconnected");
-	digitalWrite(wifiLED, HIGH);
+	digitalWrite(WIFI_LED, HIGH);
 
 	// Print and return the assigned local IP on reconnection
 	delay(1000);
@@ -74,7 +72,7 @@ IPAddress SensorWifi::setWiFiReconnectingState(){
 	bool correctStaticIP = (ipAddress[0] == gatewayIP[0]) && (ipAddress[1] == gatewayIP[1]) && (ipAddress[2] == gatewayIP[2]) && (ipAddress[3] == currentStaticOctet);
 	if (!correctStaticIP){
 		WiFi.disconnect();
-		ipAddress = connectToWifiWithStaticIP(currentSsid, currentPassword, currentGatewayIPArr, currentGatewayIPArr, currentStaticOctet);
+		// TODO: Add connection method here
 	}
 
 	return ipAddress;
