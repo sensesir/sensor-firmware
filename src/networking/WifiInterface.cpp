@@ -10,7 +10,7 @@
 
 #include "WifiInterface.hpp"
 
-void SensorWifi::connectToWifi(const char* ssid, const char* password){
+bool SensorWifi::connectToWifi(const char* ssid, const char* password){
 	// Attempt to create static IP
 	WiFi.mode(WIFI_STA);
 
@@ -36,6 +36,8 @@ void SensorWifi::connectToWifi(const char* ssid, const char* password){
 
 	// Indicate connected state on LED
 	digitalWrite(WIFI_LED, HIGH);
+	connected = true;
+	return true;
 }
 
 void SensorWifi::printNetworkAllocations() {

@@ -13,6 +13,6 @@ Development will be carried out on different boards and in different contexts, h
 
   1. Open the `Configuration.h` dir --> src/config/
   2. Change the ENV macro appropriately for your work, options:
-    * PROD - production-ready firmware
-    * DEV - development board with associated dev schematic
-    * NODE_DEV - Firmware being written on NodeMCU board (pinouts different from above)
+      * PROD - production-ready firmware
+      * DEV - development board with associated dev schematic
+      * NODE_DEV - Firmware being written on NodeMCU board (pinouts different from above)

@@ -18,9 +18,10 @@
 // Static IP 
 class SensorWifi{
 	public:
-		void connectToWifi(const char* ssid, const char* password);
+		bool connectToWifi(const char* ssid, const char* password);
 		IPAddress setWiFiReconnectingState();
 		void flashWifiLED();
+		bool connected = false;
 
 	private:
 		const char* currentSsid;
