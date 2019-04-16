@@ -24,12 +24,16 @@ SensorMQTT::SensorMQTT(mqttMsgRecCallback callback) {
     wifiClient.setTrustAnchors(&cert);
     wifiClient.setClientRSACert(&client_crt, &key);
 
-    this->mqttClient = new PubSubClient(wifiClient);
+    // this->mqttClient = new PubSubClient(wifiClient);
+    PubSubClient client(wifiClient);
+    setMQTTClient(client);
+
     this->mqttClient->setServer(AWS_IOT_DEVICE_GATEWAY, 8883);
     this->mqttClient->setCallback(callback);
 
     // Attempt to connect | TODO: Pull out, needs to be invoked on it's own
     this->connectDeviceGateway();
+    this->subscribeToTopics();
 }
 
 void SensorMQTT::connectDeviceGateway() {
@@ -48,8 +52,14 @@ void SensorMQTT::connectDeviceGateway() {
 }
 
 void SensorMQTT::subscribeToTopics() {
-  Serial.print("MQTT: Subscribing sensor client to topics");
+  Serial.println("MQTT: Subscribing sensor client to topics");
+  bool subscribed = this->mqttClient->subscribe(HEALTH_PING);
 
+  if (subscribed) {
+    Serial.println("MQTT: Subscribed to health ping");
+  } else {
+    Serial.println("MQTT: Failed to subscribe to health ping");
+  }
 }
 
 /*
@@ -118,6 +128,11 @@ int SensorMQTT::printState() {
   int currentState = this->mqttClient->state();
   this->pubSubError(currentState);
   return currentState;
+}
+
+SensorMQTT& SensorMQTT::setMQTTClient(PubSubClient& client) {
+  this->mqttClient = &client;
+  return *this;
 }
 
 

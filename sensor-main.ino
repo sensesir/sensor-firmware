@@ -29,15 +29,17 @@ void setup() {
   // Setup MQTT
   sensorMQTT = new SensorMQTT(messageReceived);      // Todo: Create static constructor that returns object instance
   // sensorMQTT->connectDeviceGateway();
+  // sensorMQTT->subscribeToTopics();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  sensorMQTT->mqttClient->loop();
 }
 
 void messageReceived(char *topic, byte *payload, unsigned int length) {
     // Handle new message here
+    Serial.println("Received new message from broker");
 }
 
 

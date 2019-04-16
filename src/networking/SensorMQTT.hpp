@@ -28,13 +28,14 @@ class SensorMQTT{
         SensorMQTT(mqttMsgRecCallback callback);
         bool connected = false;
         void connectDeviceGateway();
+        void subscribeToTopics();
         int printState(); 
+        PubSubClient *mqttClient;
 
     private:
-        PubSubClient *mqttClient;
         void pubSubError(int8_t MQTTErr);
         void ntpConnect();
-        void subscribeToTopics();
+        SensorMQTT& setMQTTClient(PubSubClient& client); 
 };
 
 #endif
