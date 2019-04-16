@@ -24,3 +24,10 @@
 
 // Time constants
 #define ACTUATION_PULSE_LENGTH 1500     // miliseconds
+
+// Time zone constants
+const int8_t TIME_ZONE = -6;            // -6: Colorado | Cali: -7
+// #define USE_SUMMER_TIME_DST
+
+// Networking
+const char AWS_IOT_DEVICE_GATEWAY[] = "anwaqu8y2zf77-ats.iot.eu-west-1.amazonaws.com";

@@ -17,7 +17,7 @@
 #define ENV NODE_DEV
 
 #if ENV == PROD
-    #include "./ProdConfig.h"     // "./ProdConfig.h" | "./DevNodeMCUConfig.h" 
+    #include "./ProdConfig.h"
 #elif ENV == DEV
     #include "./DevConfig.h"
 #elif ENV == NODE_DEV

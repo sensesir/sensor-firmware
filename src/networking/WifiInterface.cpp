@@ -11,10 +11,10 @@
 #include "WifiInterface.hpp"
 
 bool SensorWifi::connectToWifi(const char* ssid, const char* password){
-	// Attempt to create static IP
+	// Tempt - inspect **
+	WiFi.hostname("SensorJPDev");
+	
 	WiFi.mode(WIFI_STA);
-
-	// Attempt to create static IP
 	WiFi.begin(ssid, password);
 
 	// Wait for a connection
