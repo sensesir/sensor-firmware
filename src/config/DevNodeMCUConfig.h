@@ -26,7 +26,7 @@
 #define ACTUATION_PULSE_LENGTH 1500     // miliseconds
 
 // Time zone constants
-const int8_t TIME_ZONE = -6;            // -6: Colorado | Cali: -7
+const int8_t TIME_ZONE = 1;            // -6: Colorado | Cali: -7 | Ireland +1
 // #define USE_SUMMER_TIME_DST
 
 // Networking

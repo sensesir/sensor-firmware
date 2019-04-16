@@ -30,9 +30,10 @@ class SensorMQTT{
         bool connectDeviceGateway();
 
     private:
-        PubSubClient *mqttClient;
+        PubSubClient *client;
         void pubSubError(int8_t MQTTErr);
         void ntpConnect();
+        void subscribeToTopics();
 };
 
 #endif

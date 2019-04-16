@@ -10,10 +10,13 @@
 #include "./src/digital-io/GDoorIO.hpp"
 #include "./src/networking/SensorMQTT.hpp"
 
+// Function prototypes
+void messageReceived(char *topic, byte *payload, unsigned int length);
+
 // Globals
 SensorWifi wifiInterface;
 GDoorIO doorIO;
-SensorMQTT *sensorMQTTPointer;
+SensorMQTT *sensorMQTT;
 
 void setup() {
   Serial.begin(BAUD_RATE);
@@ -24,9 +27,9 @@ void setup() {
   bool connected = wifiInterface.connectToWifi("library", "");   // Aspen library has no password
 
   // Setup MQTT
-  SensorMQTT sensorMQTT(messageReceived);     // Todo: Create static constructor that returns object instance
-  sensorMQTTPointer = &sensorMQTT;
-  sensorMQTT.connectDeviceGateway();
+  sensorMQTT = new SensorMQTT(messageReceived);      // Todo: Create static constructor that returns object instance
+  // sensorMQTT->connectDeviceGateway();
+  
 }
 
 void loop() {
