@@ -29,7 +29,6 @@ void setup() {
   // Setup MQTT
   sensorMQTT = new SensorMQTT(messageReceived);      // Todo: Create static constructor that returns object instance
   // sensorMQTT->connectDeviceGateway();
-  
 }
 
 void loop() {

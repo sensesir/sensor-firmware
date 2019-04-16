@@ -24,51 +24,27 @@ SensorMQTT::SensorMQTT(mqttMsgRecCallback callback) {
     wifiClient.setTrustAnchors(&cert);
     wifiClient.setClientRSACert(&client_crt, &key);
 
-    this->client = new PubSubClient(wifiClient);
-    this->client->setServer(AWS_IOT_DEVICE_GATEWAY, 8883);
-    this->client->setCallback(callback);
+    this->mqttClient = new PubSubClient(wifiClient);
+    this->mqttClient->setServer(AWS_IOT_DEVICE_GATEWAY, 8883);
+    this->mqttClient->setCallback(callback);
 
-    // Attempt to connect
-    /*
-    Serial.print("MQTT: Attempting to connect to AWS IoT Cloud -> ");
-    Serial.println(AWS_IOT_DEVICE_GATEWAY);
-    connected = this->client.connect(DEVICE_ID);
-
-    if (connected) {
-        Serial.println("MQTT: Successfully connected to AWS IoT Cloud");
-        this->connected = true;
-    } else {
-        Serial.println("MQTT: Failed to connect to AWS IoT Cloud");
-        this->pubSubError(client.state());
-    }
-    */
+    // Attempt to connect | TODO: Pull out, needs to be invoked on it's own
     this->connectDeviceGateway();
 }
 
-bool SensorMQTT::connectDeviceGateway() {
+void SensorMQTT::connectDeviceGateway() {
     Serial.print("MQTT: Attempting to connect to AWS IoT Cloud -> ");
-    Serial.println(AWS_IOT_DEVICE_GATEWAY);
-    
-    // Check if client is instantiated? 
-    /*
-    if (this->client->state()) {
-      Serial.println("Some MQTT state");
-      return 0;
-    }
-    */
-    
-    this->connected = this->client->connect(DEVICE_ID);
+    Serial.println(AWS_IOT_DEVICE_GATEWAY);    
+    this->connected = this->mqttClient->connect(DEVICE_ID);
 
-    if (connected) {
+    if (this->connected) {
       this->connected = true;
       Serial.println("MQTT: Successfully connected to AWS IoT Cloud");
     } else {
       this->connected = false;
       Serial.println("MQTT: Failed to connect to AWS IoT Cloud");
-      this->pubSubError(client->state());
+      this->pubSubError(mqttClient->state());
     }
-
-    // Topic subscriptions
 }
 
 void SensorMQTT::subscribeToTopics() {
@@ -110,25 +86,25 @@ void SensorMQTT::ntpConnect() {
 
 void SensorMQTT::pubSubError(int8_t MQTTErr) {
   if (MQTTErr == MQTT_CONNECTION_TIMEOUT)
-    Serial.print("MQTT: Connection tiemout");
+    Serial.println("MQTT: Connection tiemout");
   else if (MQTTErr == MQTT_CONNECTION_LOST)
-    Serial.print("MQTT: Connection lost");
+    Serial.println("MQTT: Connection lost");
   else if (MQTTErr == MQTT_CONNECT_FAILED)
-    Serial.print("MQTT: Connect failed");
+    Serial.println("MQTT: Connect failed");
   else if (MQTTErr == MQTT_DISCONNECTED)
-    Serial.print("MQTT: Disconnected");
+    Serial.println("MQTT: Disconnected");
   else if (MQTTErr == MQTT_CONNECTED)
-    Serial.print("MQTT: Connected");
+    Serial.println("MQTT: Connected");
   else if (MQTTErr == MQTT_CONNECT_BAD_PROTOCOL)
-    Serial.print("MQTT: Connect bad protocol");
+    Serial.println("MQTT: Connect bad protocol");
   else if (MQTTErr == MQTT_CONNECT_BAD_CLIENT_ID)
-    Serial.print("MQTT: Connect bad Client-ID");
+    Serial.println("MQTT: Connect bad Client-ID");
   else if (MQTTErr == MQTT_CONNECT_UNAVAILABLE)
-    Serial.print("MQTT: Connect unavailable");
+    Serial.println("MQTT: Connect unavailable");
   else if (MQTTErr == MQTT_CONNECT_BAD_CREDENTIALS)
-    Serial.print("MQTT: Connect bad credentials");
+    Serial.println("MQTT: Connect bad credentials");
   else if (MQTTErr == MQTT_CONNECT_UNAUTHORIZED)
-    Serial.print("MQTT: Connect unauthorized");
+    Serial.println("MQTT: Connect unauthorized");
   else 
     Serial.println("MQTT: No error code");
 
@@ -136,6 +112,12 @@ void SensorMQTT::pubSubError(int8_t MQTTErr) {
   WiFiClientSecure wifiClient;
   Serial.print("SSL Error Code: ");
   Serial.println(wifiClient.getLastSSLError());
+}
+
+int SensorMQTT::printState() {
+  int currentState = this->mqttClient->state();
+  this->pubSubError(currentState);
+  return currentState;
 }
 
 
