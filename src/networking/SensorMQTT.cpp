@@ -1,62 +1,60 @@
 /*
-*	Wrapper class to work with the OSS MQTT library for an ESP8266  
+*	  Wrapper class to work with the OSS MQTT library for an ESP8266  
 *   that uses the Arduino SDK
 *
-*	Author: Josh Perry <josh.perry245@gmail.com> 
-*	Copyright 2019
+*	  Collaborator(s): Josh Perry <josh.perry245@gmail.com> 
+*	  Copyright 2019
 */
 
 #include "SensorMQTT.hpp"
 
-// Todo: Create static constructor that returns object instance
-SensorMQTT::SensorMQTT(mqttMsgRecCallback callback) {
+SensorMQTT::SensorMQTT() {
+  // Just to init super class
+}
+
+void SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
     Serial.println("MQTT: Instantiating MQTT client");
 
     // Set SSL certs
-    WiFiClientSecure wifiClient;
     BearSSL::X509List cert(caCert);
     BearSSL::X509List client_crt(clientCert);
     BearSSL::PrivateKey key(privateKey);
-
-    // Set time zone - necessary for AWS MQTT
-    this->ntpConnect();
-
     wifiClient.setTrustAnchors(&cert);
     wifiClient.setClientRSACert(&client_crt, &key);
+    setClient(wifiClient);
 
-    // this->mqttClient = new PubSubClient(wifiClient);
-    PubSubClient client(wifiClient);
-    setMQTTClient(client);
+    // Set time zone - necessary for AWS MQTT [todo: investigate why]
+    this->ntpConnect();
+    this->setServer(AWS_IOT_DEVICE_GATEWAY, 8883);
+    this->setCallback(callback);
 
-    this->mqttClient->setServer(AWS_IOT_DEVICE_GATEWAY, 8883);
-    this->mqttClient->setCallback(callback);
-
-    // Attempt to connect | TODO: Pull out, needs to be invoked on it's own
+    /*
+     * Todo: Work out what resource on this function stack is needed by 
+     * the connect method. When called outside of this scope cases a crash.
+     */
     this->connectDeviceGateway();
-    this->subscribeToTopics();
 }
 
 void SensorMQTT::connectDeviceGateway() {
     Serial.print("MQTT: Attempting to connect to AWS IoT Cloud -> ");
     Serial.println(AWS_IOT_DEVICE_GATEWAY);    
-    this->connected = this->mqttClient->connect(DEVICE_ID);
+    bool success = this->connect(DEVICE_ID);
 
-    if (this->connected) {
-      this->connected = true;
+    if (success) {
       Serial.println("MQTT: Successfully connected to AWS IoT Cloud");
     } else {
-      this->connected = false;
       Serial.println("MQTT: Failed to connect to AWS IoT Cloud");
-      this->pubSubError(mqttClient->state());
+      this->pubSubError(this->state());
     }
 }
 
 void SensorMQTT::subscribeToTopics() {
   Serial.println("MQTT: Subscribing sensor client to topics");
-  bool subscribed = this->mqttClient->subscribe(HEALTH_PING);
+  bool subscribed = this->subscribe(HEALTH_PING);
 
   if (subscribed) {
-    Serial.println("MQTT: Subscribed to health ping");
+    Serial.print("MQTT: Subscribed to ");
+    Serial.println(HEALTH_PING);
   } else {
     Serial.println("MQTT: Failed to subscribe to health ping");
   }
@@ -122,17 +120,6 @@ void SensorMQTT::pubSubError(int8_t MQTTErr) {
   WiFiClientSecure wifiClient;
   Serial.print("SSL Error Code: ");
   Serial.println(wifiClient.getLastSSLError());
-}
-
-int SensorMQTT::printState() {
-  int currentState = this->mqttClient->state();
-  this->pubSubError(currentState);
-  return currentState;
-}
-
-SensorMQTT& SensorMQTT::setMQTTClient(PubSubClient& client) {
-  this->mqttClient = &client;
-  return *this;
 }
 
 

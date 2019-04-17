@@ -23,19 +23,17 @@
 
 typedef void (*mqttMsgRecCallback)(char*, byte*, unsigned int);
 
-class SensorMQTT{
+class SensorMQTT: public PubSubClient{
     public:
-        SensorMQTT(mqttMsgRecCallback callback);
-        bool connected = false;
+        SensorMQTT();
+        void initializeMQTT(mqttMsgRecCallback callback);
         void connectDeviceGateway();
         void subscribeToTopics();
-        int printState(); 
-        PubSubClient *mqttClient;
 
     private:
+        WiFiClientSecure wifiClient;                        // Needs to be persisted
         void pubSubError(int8_t MQTTErr);
         void ntpConnect();
-        SensorMQTT& setMQTTClient(PubSubClient& client); 
 };
 
 #endif

@@ -347,6 +347,8 @@ boolean PubSubClient::loop() {
                             payload = buffer+llen+3+tl;
                             callback(topic,payload,len-llen-3-tl);
                         }
+                    } else {
+                        Serial.println("PUBSUB: No callback set");
                     }
                 } else if (type == MQTTPINGREQ) {
                     buffer[0] = MQTTPINGRESP;
@@ -362,6 +364,8 @@ boolean PubSubClient::loop() {
         }
         return true;
     }
+
+    Serial.println("PUBSUB: Client not connected");
     return false;
 }
 

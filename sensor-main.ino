@@ -1,7 +1,7 @@
 /*
  * Garage Door IoT sensor main file using Arduino framework
  * 
- * Author: Josh Perry
+ * Collaborator(s): Josh Perry <josh.perry245@gmail.com>
  * Created: 04/13/2019
  */
 
@@ -16,7 +16,7 @@ void messageReceived(char *topic, byte *payload, unsigned int length);
 // Globals
 SensorWifi wifiInterface;
 GDoorIO doorIO;
-SensorMQTT *sensorMQTT;
+SensorMQTT sensorMQTT;
 
 void setup() {
   Serial.begin(BAUD_RATE);
@@ -27,14 +27,14 @@ void setup() {
   bool connected = wifiInterface.connectToWifi("library", "");   // Aspen library has no password
 
   // Setup MQTT
-  sensorMQTT = new SensorMQTT(messageReceived);      // Todo: Create static constructor that returns object instance
-  // sensorMQTT->connectDeviceGateway();
-  // sensorMQTT->subscribeToTopics();
+  sensorMQTT.initializeMQTT(messageReceived);     
+  sensorMQTT.subscribeToTopics();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  sensorMQTT->mqttClient->loop();
+  sensorMQTT.loop();
+  delay(10);
 }
 
 void messageReceived(char *topic, byte *payload, unsigned int length) {

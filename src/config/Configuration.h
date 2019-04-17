@@ -26,4 +26,7 @@
     #error No ENV defined
 #endif
 
+// Generic constants here
+const char FIRMWARE_VERSION[] = "0.1.0";
+
 #endif
