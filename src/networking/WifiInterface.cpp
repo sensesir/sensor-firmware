@@ -11,9 +11,7 @@
 #include "WifiInterface.hpp"
 
 bool SensorWifi::connectToWifi(const char* ssid, const char* password){
-	// Tempt - inspect **
-	WiFi.hostname("SensorJPDev");
-	
+	WiFi.hostname(SENSOR_UID);
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(ssid, password);
 

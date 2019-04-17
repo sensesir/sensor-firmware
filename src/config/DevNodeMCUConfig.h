@@ -31,6 +31,7 @@ const int8_t TIME_ZONE = 1;            // -6: Colorado | Cali: -7 | Ireland +1
 
 // Networking
 const char AWS_IOT_DEVICE_GATEWAY[] = "anwaqu8y2zf77-ats.iot.eu-west-1.amazonaws.com";
+const char SENSOR_UID[] = "SensorJPDev";
 
 // MQTT Topic Pubsub
 const char HEALTH_PING[] = "gdoor/sensor/sensorUID/request/health";
