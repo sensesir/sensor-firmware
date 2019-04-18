@@ -50,13 +50,23 @@ void SensorMQTT::connectDeviceGateway() {
 
 void SensorMQTT::subscribeToTopics() {
   Serial.println("MQTT: Subscribing sensor client to topics");
-  bool subscribed = this->subscribe(HEALTH_PING);
+  std::vector<const char*> SUBSCRIBE_TOPICS = {SUB_ACTUATE, SUB_HEALTH_PING};
 
-  if (subscribed) {
-    Serial.print("MQTT: Subscribed to ");
-    Serial.println(HEALTH_PING);
-  } else {
-    Serial.println("MQTT: Failed to subscribe to health ping");
+  for (int i=0; i < SUBSCRIBE_TOPICS.size(); i++) {
+    bool subscribed = this->subscribe(SUBSCRIBE_TOPICS[i]);
+
+    if (subscribed) {
+      Serial.print("MQTT: Subscribed to ");
+      Serial.println(SUBSCRIBE_TOPICS[i]);
+    } else {
+      Serial.print("MQTT: Subscribed to ");
+      Serial.println(SUBSCRIBE_TOPICS[i]);
+      
+      // TODO: throw error here - sensor shouldn't initialize with failed subscription
+      // Write to EEPROM
+      // Assert false for crash
+      // OR on test bed have an error LED that indicates error state [can then go investigate logs]
+    }
   }
 }
 
