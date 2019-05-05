@@ -30,10 +30,17 @@ class SensorMQTT: public PubSubClient{
         void initializeMQTT(mqttMsgRecCallback callback);
         void connectDeviceGateway();
         void subscribeToTopics();
+        
+        // Publish methods
         void publishBootEvent(bool firstBoot);
+        void publishDoorState(const char* doorState); 
+        void publishReconnection();
+        void publishHealth();
+        void publishError(const char* message);
 
     private:
-        WiFiClientSecure wifiClient;                        // Needs to be persisted
+        WiFiClientSecure wifiClient; // Needs to be persisted
+        // void publishMessage(char* topic, const JsonObject& payload); [Re-implement when possible]
         void generateTopic(char* topic,const char* target, const char* targetUID, const char* msgCategory, const char* descriptor);
         void pubSubError(int8_t MQTTErr);
         void ntpConnect();

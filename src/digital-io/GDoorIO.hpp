@@ -11,20 +11,31 @@
 // Includes
 #include <Arduino.h>
 #include <vector>
+#include <string>
 #include "../config/Configuration.h"
 
 class GDoorIO{
-    public: 
+    public:
+        // GPIO Pins 
         int doorSensorPin = DOOR_SENSOR;
         int relayPin 	  = RELAY_OUT;
         int wifiLEDPin 	  = WIFI_LED;
         int hardResetPin  = HARD_RESET;
         int pulseLength   = ACTUATION_PULSE_LENGTH;		
 
+        // State
+        struct Door GDoor;
+
         // Unused exposed pins
         std::vector<char> unusedPins = {0, 2, 3, 13, 14, 15, 16};
 	
+        // Methods
+        void initialize();
+
+    private:
+        void initializeState();
         void initializeGPIOPins();
+        void updateDoorState(); 
 };
 
 #endif

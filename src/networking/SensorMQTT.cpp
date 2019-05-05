@@ -76,8 +76,6 @@ void SensorMQTT::publishBootEvent(bool firstBoot) {
   // Create topic
   char topic[256];
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_BOOT);
-  Serial.print("MQTT: Created topic => ");
-  Serial.println(topic);
 
   // Create payload using JSON lib
   const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
@@ -98,14 +96,132 @@ void SensorMQTT::publishBootEvent(bool firstBoot) {
   char serializedPayload[256];
   serializeJson(payload, serializedPayload);
 
-  bool success = this->publish(topic, serializedPayload);              // server/anwaqu8y2zf77-ats.iot.eu-west-1.amazonaws.com/event/firstBoot
-  if(success) {
-    Serial.print("MQTT: Published boot message to topic: ");
+  bool success = this->publish(topic, serializedPayload);        
+  if (success) {
+    Serial.print("MQTT: Published message to topic: ");
     Serial.println(topic);
+    Serial.print("MQTT: Payload => ");
+    serializeJson(payload, Serial);
+    Serial.println("");
   } else {
-    Serial.println("MQTT: Failed to publish boot message");
+    Serial.print("MQTT: Failed to publish message to topic: ");
+    Serial.println(topic);
   }
 }
+
+void SensorMQTT::publishDoorState(const char* doorState) {
+  // Create topic
+  char topic[256];
+  this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_DOOR_STATE);
+
+  // Create payload
+  const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
+  StaticJsonDocument<capacity> payload;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
+  payload[KEY_EVENT] = PUB_DOOR_STATE;
+  payload[KEY_STATE] = doorState;
+
+  // Serialize JSON into char
+  int jsonLength = measureJson(payload);
+  char serializedPayload[256];
+  serializeJson(payload, serializedPayload);
+
+  bool success = this->publish(topic, serializedPayload);        
+  if (success) {
+    Serial.print("MQTT: Published message to topic: ");
+    Serial.println(topic);
+    Serial.print("MQTT: Payload => ");
+    serializeJson(payload, Serial);
+    Serial.println("");
+  } else {
+    Serial.print("MQTT: Failed to publish message to topic: ");
+    Serial.println(topic);
+  }
+}
+
+void SensorMQTT::publishReconnection() {
+  // Create topic
+  char topic[256];
+  this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_RECONNECT);
+
+  // Create payload
+  const int capacity = JSON_OBJECT_SIZE(2) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
+  StaticJsonDocument<capacity> payload;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
+  payload[KEY_EVENT] = PUB_RECONNECT;
+
+  // Serialize JSON into char
+  int jsonLength = measureJson(payload);
+  char serializedPayload[256];
+  serializeJson(payload, serializedPayload);
+
+  bool success = this->publish(topic, serializedPayload);        
+  if (success) {
+    Serial.print("MQTT: Published message to topic: ");
+    Serial.println(topic);
+    Serial.print("MQTT: Payload => ");
+    serializeJson(payload, Serial);
+    Serial.println("");
+  } else {
+    Serial.print("MQTT: Failed to publish message to topic: ");
+    Serial.println(topic);
+  }
+}
+
+void SensorMQTT::publishHealth() {
+  // TODO:
+}
+
+void SensorMQTT::publishError(const char* message) {
+  // Create topic
+  char topic[256];
+  this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_ERROR);
+
+  // Create payload
+  const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
+  StaticJsonDocument<capacity> payload;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
+  payload[KEY_EVENT] = PUB_ERROR;
+  payload[KEY_MESSAGE] = message;
+
+  // Serialize JSON into char
+  int jsonLength = measureJson(payload);
+  char serializedPayload[256];
+  serializeJson(payload, serializedPayload);
+
+  bool success = this->publish(topic, serializedPayload);        
+  if (success) {
+    Serial.print("MQTT: Published message to topic: ");
+    Serial.println(topic);
+    Serial.print("MQTT: Payload => ");
+    serializeJson(payload, Serial);
+    Serial.println("");
+  } else {
+    Serial.print("MQTT: Failed to publish message to topic: ");
+    Serial.println(topic);
+  }
+}
+
+/**
+
+  Currently struggling with how to set argument 2 to pass the StaticJsonDocument instance in
+
+  void SensorMQTT::publishMessage(char* topic, const JsonObject& payload) {
+    // Serialize JSON into char
+    int jsonLength = measureJson(payload);
+    char serializedPayload[256];                    // 256 is based on expected largest packet + safety, could need to update
+    serializeJson(payload, serializedPayload);
+
+    bool success = this->publish(topic, serializedPayload);        
+    if(success) {
+      Serial.print("MQTT: Published message to topic: ");
+      Serial.println(topic);
+    } else {
+      Serial.print("MQTT: Failed to publish message to topic: ");
+      Serial.println(topic);
+    }
+  }
+*/
 
 void SensorMQTT::generateTopic(char* topic,const char* target, const char* targetUID, const char* msgCategory, const char* descriptor) {
   strcpy(topic, target);

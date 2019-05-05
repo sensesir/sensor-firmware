@@ -21,7 +21,7 @@ SensorMQTT sensorMQTT;
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("Firing up Esp!!");
-  doorIO.initializeGPIOPins();
+  doorIO.initialize();
   
   // Setup Wifi
   bool connected = wifiInterface.connectToWifi("WholeFoodsMarket", "");
