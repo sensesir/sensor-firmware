@@ -59,7 +59,7 @@ void SensorMQTT::subscribeToTopics() {
       Serial.print("MQTT: Subscribed to ");
       Serial.println(SUBSCRIBE_TOPICS[i]);
     } else {
-      Serial.print("MQTT: Subscribed to ");
+      Serial.print("MQTT: Failed to subscribe to ");
       Serial.println(SUBSCRIBE_TOPICS[i]);
       
       // TODO: throw error here - sensor shouldn't initialize with failed subscription
@@ -68,6 +68,46 @@ void SensorMQTT::subscribeToTopics() {
       // OR on test bed have an error LED that indicates error state [can then go investigate logs]
     }
   }
+}
+
+void SensorMQTT::publishBootEvent(bool firstBoot) {
+  const char* topic = this->generateTopic(SERVER, AWS_IOT_DEVICE_GATEWAY, EVENT, PUB_FIRST_BOOT);
+  
+  // Create payload using JSON lib
+  const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
+  StaticJsonDocument<capacity> payload;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
+  payload[KEY_FIRMWARE_VERSION] = FIRMWARE_VERSION; 
+  if (firstBoot) {
+    payload[KEY_EVENT] = PUB_FIRST_BOOT;
+  } else {
+    payload[KEY_EVENT] = PUB_BOOT;
+  }
+  serializeJson(payload, Serial);
+
+  // Serialize JSON into char
+  int jsonLength = measureJson(payload);
+  char serializedPayload[256];
+  serializeJson(payload, serializedPayload);
+
+  bool success = this->publish(topic, serializedPayload);
+  if(success) {
+    Serial.println("MQTT: Published boot message");
+  } else {
+    Serial.println("MQTT: Failed to publish boot message");
+  }
+}
+
+char* SensorMQTT::generateTopic(const char* target, const char* targetUID, const char* msgCategory, const char* descriptor) {
+  char topic[256];
+  strcpy(topic, target);
+  strcpy(topic, "/");         // Not computationally optimal, but traded for constants coherence
+  strcpy(topic, targetUID);
+  strcpy(topic, "/");
+  strcpy(topic, msgCategory);
+  strcpy(topic, "/");
+  strcpy(topic, descriptor);
+  return topic;               // Ensure memory for topic doesn't get deallocated ** Suspect it will
 }
 
 /*

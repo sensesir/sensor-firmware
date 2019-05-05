@@ -29,10 +29,12 @@ void setup() {
   // Setup MQTT
   sensorMQTT.initializeMQTT(messageReceived);     
   sensorMQTT.subscribeToTopics();
+
+  // Setup successful: post boot message
+  sensorMQTT.publishBootEvent(false);         // Will be based on presence of a persisted sensorUID
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
   sensorMQTT.loop();
   delay(10);
 }

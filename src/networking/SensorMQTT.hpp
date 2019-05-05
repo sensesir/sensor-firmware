@@ -18,6 +18,7 @@
 #include <WiFiClientSecure.h>
 #include <time.h>
 #include "../lib/PubSubClient/PubSubClient.h"
+#include "../lib/ArduinoJSON/ArduinoJson.h"
 #include "../config/Configuration.h"
 #include "../../secrets/AWSIoTSecrets.h"
 
@@ -29,9 +30,11 @@ class SensorMQTT: public PubSubClient{
         void initializeMQTT(mqttMsgRecCallback callback);
         void connectDeviceGateway();
         void subscribeToTopics();
+        void publishBootEvent(bool firstBoot);
 
     private:
         WiFiClientSecure wifiClient;                        // Needs to be persisted
+        char* generateTopic(const char* target, const char* targetUID, const char* msgCategory, const char* descriptor);
         void pubSubError(int8_t MQTTErr);
         void ntpConnect();
 };
