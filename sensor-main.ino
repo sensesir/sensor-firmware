@@ -24,14 +24,14 @@ void setup() {
   doorIO.initializeGPIOPins();
   
   // Setup Wifi
-  bool connected = wifiInterface.connectToWifi("library", "");   // Aspen library has no password
+  bool connected = wifiInterface.connectToWifi("WholeFoodsMarket", "");
 
   // Setup MQTT
   sensorMQTT.initializeMQTT(messageReceived);     
   sensorMQTT.subscribeToTopics();
 
   // Setup successful: post boot message
-  sensorMQTT.publishBootEvent(false);         // Will be based on presence of a persisted sensorUID
+  sensorMQTT.publishBootEvent(true);         // Will be based on presence of a persisted sensorUID
 }
 
 void loop() {

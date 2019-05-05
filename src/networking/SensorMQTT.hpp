@@ -34,7 +34,7 @@ class SensorMQTT: public PubSubClient{
 
     private:
         WiFiClientSecure wifiClient;                        // Needs to be persisted
-        char* generateTopic(const char* target, const char* targetUID, const char* msgCategory, const char* descriptor);
+        void generateTopic(char* topic,const char* target, const char* targetUID, const char* msgCategory, const char* descriptor);
         void pubSubError(int8_t MQTTErr);
         void ntpConnect();
 };

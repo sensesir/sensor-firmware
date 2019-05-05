@@ -53,14 +53,16 @@ void SensorMQTT::subscribeToTopics() {
   std::vector<const char*> SUBSCRIBE_TOPICS = {SUB_ACTUATE, SUB_HEALTH_PING};
 
   for (int i=0; i < SUBSCRIBE_TOPICS.size(); i++) {
-    bool subscribed = this->subscribe(SUBSCRIBE_TOPICS[i]);
+    char topic[256];
+    this->generateTopic(topic, SENSOR, SENSOR_UID, COMMAND, SUBSCRIBE_TOPICS[i]);
+    bool subscribed = this->subscribe(topic);
 
     if (subscribed) {
       Serial.print("MQTT: Subscribed to ");
-      Serial.println(SUBSCRIBE_TOPICS[i]);
+      Serial.println(topic);
     } else {
       Serial.print("MQTT: Failed to subscribe to ");
-      Serial.println(SUBSCRIBE_TOPICS[i]);
+      Serial.println(topic);
       
       // TODO: throw error here - sensor shouldn't initialize with failed subscription
       // Write to EEPROM
@@ -71,8 +73,12 @@ void SensorMQTT::subscribeToTopics() {
 }
 
 void SensorMQTT::publishBootEvent(bool firstBoot) {
-  const char* topic = this->generateTopic(SERVER, AWS_IOT_DEVICE_GATEWAY, EVENT, PUB_FIRST_BOOT);
-  
+  // Create topic
+  char topic[256];
+  this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_BOOT);
+  Serial.print("MQTT: Created topic => ");
+  Serial.println(topic);
+
   // Create payload using JSON lib
   const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
@@ -83,31 +89,32 @@ void SensorMQTT::publishBootEvent(bool firstBoot) {
   } else {
     payload[KEY_EVENT] = PUB_BOOT;
   }
+  Serial.print("MQTT: Publishing payload: ");
   serializeJson(payload, Serial);
+  Serial.println("");
 
   // Serialize JSON into char
   int jsonLength = measureJson(payload);
   char serializedPayload[256];
   serializeJson(payload, serializedPayload);
 
-  bool success = this->publish(topic, serializedPayload);
+  bool success = this->publish(topic, serializedPayload);              // server/anwaqu8y2zf77-ats.iot.eu-west-1.amazonaws.com/event/firstBoot
   if(success) {
-    Serial.println("MQTT: Published boot message");
+    Serial.print("MQTT: Published boot message to topic: ");
+    Serial.println(topic);
   } else {
     Serial.println("MQTT: Failed to publish boot message");
   }
 }
 
-char* SensorMQTT::generateTopic(const char* target, const char* targetUID, const char* msgCategory, const char* descriptor) {
-  char topic[256];
+void SensorMQTT::generateTopic(char* topic,const char* target, const char* targetUID, const char* msgCategory, const char* descriptor) {
   strcpy(topic, target);
-  strcpy(topic, "/");         // Not computationally optimal, but traded for constants coherence
-  strcpy(topic, targetUID);
-  strcpy(topic, "/");
-  strcpy(topic, msgCategory);
-  strcpy(topic, "/");
-  strcpy(topic, descriptor);
-  return topic;               // Ensure memory for topic doesn't get deallocated ** Suspect it will
+  strcat(topic, "/");         // Not computationally optimal, but traded for constants coherence
+  strcat(topic, targetUID);
+  strcat(topic, "/");
+  strcat(topic, msgCategory);
+  strcat(topic, "/");
+  strcat(topic, descriptor);
 }
 
 /*

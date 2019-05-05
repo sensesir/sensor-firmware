@@ -385,6 +385,7 @@ boolean PubSubClient::publish(const char* topic, const uint8_t* payload, unsigne
     if (connected()) {
         if (MQTT_MAX_PACKET_SIZE < MQTT_MAX_HEADER_SIZE + 2+strlen(topic) + plength) {
             // Too long
+            Serial.println("PUBSUB: MQTT packet too large");
             return false;
         }
         // Leave room in the buffer for header and variable length field
