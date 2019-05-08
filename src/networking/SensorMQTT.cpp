@@ -145,7 +145,7 @@ void SensorMQTT::publishReconnection() {
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_RECONNECT);
 
   // Create payload
-  const int capacity = JSON_OBJECT_SIZE(2) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
+  const int capacity = JSON_OBJECT_SIZE(2) + 120;     // 2 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
   payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_RECONNECT;
@@ -169,7 +169,32 @@ void SensorMQTT::publishReconnection() {
 }
 
 void SensorMQTT::publishHealth() {
-  // TODO:
+  // Create topic
+  char topic[256];
+  this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_HEALTH);
+
+  // Create payload
+  const int capacity = JSON_OBJECT_SIZE(2) + 120;     // 2 KV pairs + 120 bytes spare for const input duplication
+  StaticJsonDocument<capacity> payload;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
+  payload[KEY_EVENT] = PUB_HEALTH;
+
+  // Serialize JSON into char
+  int jsonLength = measureJson(payload);
+  char serializedPayload[256];
+  serializeJson(payload, serializedPayload);
+
+  bool success = this->publish(topic, serializedPayload);        
+  if (success) {
+    Serial.print("MQTT: Published message to topic: ");
+    Serial.println(topic);
+    Serial.print("MQTT: Payload => ");
+    serializeJson(payload, Serial);
+    Serial.println("");
+  } else {
+    Serial.print("MQTT: Failed to publish message to topic: ");
+    Serial.println(topic);
+  }
 }
 
 void SensorMQTT::publishError(const char* message) {
@@ -202,6 +227,14 @@ void SensorMQTT::publishError(const char* message) {
   }
 }
 
+// Specific error type
+void SensorMQTT::publishUnknownTypeError(std::string unknownType, std::string identifier) {
+  Serial.print("MQTT: Reporting unknown type => ");
+  Serial.println(unknownType.c_str());
+
+  // TODO: complete
+}
+
 /**
 
   Currently struggling with how to set argument 2 to pass the StaticJsonDocument instance in
@@ -223,10 +256,41 @@ void SensorMQTT::publishError(const char* message) {
   }
 */
 
+bool SensorMQTT::verifyTargetUID(char *payload) {
+  std::string sensorUID;
+  this->deserializeStdPayload(payload, &sensorUID);
+
+  const std::string sensorUIDStr(sensorUID);
+  if (sensorUIDStr == std::string(SENSOR_UID)){ return true; }
+  else { return false; }
+}
+
+void SensorMQTT::deserializeStdPayload(char* payload, std::string *sensorUID) {
+  const size_t capacity = JSON_OBJECT_SIZE(1) + 100; // Only 1 KV pair for now + buffer for duplication of const
+  StaticJsonDocument<capacity> doc;
+  DeserializationError error = deserializeJson(doc, payload);
+  if (error) {
+      Serial.print("MQTT: deserializeJson() failed with code ");
+      Serial.println(error.c_str());
+      return;
+  }
+
+  // Set pointer that was passed in
+  const char* rawSensorUID = doc[KEY_SENSOR_UID];
+  *sensorUID = rawSensorUID;
+  
+  #if ENV == NODE_DEV
+  Serial.print("MQTT: Extracted sensorUID string => ");
+  Serial.println(sensorUID->c_str());
+  #endif
+}
+
 void SensorMQTT::generateTopic(char* topic,const char* target, const char* targetUID, const char* msgCategory, const char* descriptor) {
   strcpy(topic, target);
   strcat(topic, "/");         // Not computationally optimal, but traded for constants coherence
   strcat(topic, targetUID);
+  strcat(topic, "/");
+  strcat(topic, FIRMWARE_VERSION); // Static for all topics
   strcat(topic, "/");
   strcat(topic, msgCategory);
   strcat(topic, "/");

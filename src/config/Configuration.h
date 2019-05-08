@@ -39,6 +39,7 @@ const char SERVER[]  = "server";
 const char SENSOR[]  = "gdoor";
 const char EVENT[]   = "event";
 const char COMMAND[] = "command";
+const char TOPIC_DELIMITER[] = "/";
 
 // Subscribe
 const char SUB_ACTUATE[]     = "actuate";
@@ -58,6 +59,12 @@ const char KEY_EVENT[]            = "event";
 const char KEY_FIRMWARE_VERSION[] = "firmwareVersion";
 const char KEY_STATE[]            = "state";
 const char KEY_MESSAGE[]          = "message";
+
+// Commands 
+typedef enum Command {
+    ACTUATE=0,
+    HEALTH
+} Command;
 
 // Door state
 struct Door {

@@ -31,6 +31,7 @@ class GDoorIO{
 	
         // Methods
         void initialize();
+        void actuateDoor();
 
     private:
         void initializeState();

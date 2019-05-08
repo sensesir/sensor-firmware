@@ -17,10 +17,12 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 #include <time.h>
+#include <string>
 #include "../lib/PubSubClient/PubSubClient.h"
 #include "../lib/ArduinoJSON/ArduinoJson.h"
 #include "../config/Configuration.h"
 #include "../../secrets/AWSIoTSecrets.h"
+#include "../utilities/Utilities.h"
 
 typedef void (*mqttMsgRecCallback)(char*, byte*, unsigned int);
 
@@ -37,6 +39,9 @@ class SensorMQTT: public PubSubClient{
         void publishReconnection();
         void publishHealth();
         void publishError(const char* message);
+        void publishUnknownTypeError(std::string unknownType, std::string identifier);
+        bool verifyTargetUID(char* payload);
+        void deserializeStdPayload(char* payload, std::string *sensorUID); 
 
     private:
         WiFiClientSecure wifiClient; // Needs to be persisted

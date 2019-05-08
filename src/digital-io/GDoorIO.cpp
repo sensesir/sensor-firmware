@@ -45,3 +45,7 @@ void GDoorIO::updateDoorState() {
 
     strcpy(this->GDoor.state, DOOR_STATE_CLOSED);
 }
+
+void GDoorIO::actuateDoor() {
+    // TODO:
+}
