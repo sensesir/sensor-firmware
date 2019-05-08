@@ -278,11 +278,6 @@ void SensorMQTT::deserializeStdPayload(char* payload, std::string *sensorUID) {
   // Set pointer that was passed in
   const char* rawSensorUID = doc[KEY_SENSOR_UID];
   *sensorUID = rawSensorUID;
-  
-  #if ENV == NODE_DEV
-  Serial.print("MQTT: Extracted sensorUID string => ");
-  Serial.println(sensorUID->c_str());
-  #endif
 }
 
 void SensorMQTT::generateTopic(char* topic,const char* target, const char* targetUID, const char* msgCategory, const char* descriptor) {
