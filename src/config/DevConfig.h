@@ -27,7 +27,7 @@
 #define ACTUATION_PULSE_LENGTH 1500     // miliseconds
 
 // Misc
-#define SENSOR_UID_LENGTH 36            // E.g: 073f04a4-0b9b-4a00-9b11-89709a3ccd1f
+// #define SENSOR_UID_LENGTH 36            // E.g: 073f04a4-0b9b-4a00-9b11-89709a3ccd1f
 
 // Time zone constants
 const int8_t TIME_ZONE = +2;            // UTC+2 => JHB
