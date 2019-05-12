@@ -26,7 +26,7 @@ void setup() {
   doorIO.initialize();
   
   // Setup Wifi
-  bool connected = wifiInterface.connectToWifi("WholeFoodsMarket", "");
+  bool connected = wifiInterface.connectToWifi("The FishBowl", "Glennie123");
 
   // Setup MQTT
   sensorMQTT.initializeMQTT(messageReceived);     

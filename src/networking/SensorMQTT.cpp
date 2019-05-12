@@ -260,8 +260,7 @@ bool SensorMQTT::verifyTargetUID(char *payload) {
   std::string sensorUID;
   this->deserializeStdPayload(payload, &sensorUID);
 
-  const std::string sensorUIDStr(sensorUID);
-  if (sensorUIDStr == std::string(SENSOR_UID)){ return true; }
+  if (sensorUID == std::string(SENSOR_UID)){ return true; }
   else { return false; }
 }
 
@@ -272,12 +271,20 @@ void SensorMQTT::deserializeStdPayload(char* payload, std::string *sensorUID) {
   if (error) {
       Serial.print("MQTT: deserializeJson() failed with code ");
       Serial.println(error.c_str());
+
+      // Log error ** => Publish & write to memory
+      // TODO publish error
+
       return;
   }
 
   // Set pointer that was passed in
   const char* rawSensorUID = doc[KEY_SENSOR_UID];
-  *sensorUID = rawSensorUID;
+  if (!rawSensorUID) { 
+    *sensorUID = "";  // Error case - rawSensorUID = NULL_PTR
+  } else {
+    *sensorUID = rawSensorUID;
+  }
 }
 
 void SensorMQTT::generateTopic(char* topic,const char* target, const char* targetUID, const char* msgCategory, const char* descriptor) {
