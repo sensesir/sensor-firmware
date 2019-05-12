@@ -40,7 +40,7 @@ class SensorMQTT: public PubSubClient{
         void publishHealth();
         void publishError(const char* message);
         void publishUnknownTypeError(std::string unknownType, std::string identifier);
-        bool verifyTargetUID(char* payload);
+        bool verifyTargetUID(char *payload, std::string *sensorUID); 
         void deserializeStdPayload(char* payload, std::string *sensorUID); 
 
     private:

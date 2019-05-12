@@ -49,15 +49,15 @@ void messageReceived(char *topic, byte *payload, unsigned int length) {
     // Parse topic to analyze what to do
     std::vector<std::string> topicComponents;
     splitCharByDelimiter(topic, TOPIC_DELIMITER, &topicComponents);
-    std::string sensorUID  = topicComponents[1];
     std::string category   = topicComponents[3];
     std::string descriptor = topicComponents[4];
 
     // Deserialize sensorUID as redundant check for correct target
+    std::string sensorUID;
     char payloadCast[256];
     byteToCharArray(payload, length, payloadCast);  // Seems a bit pointless, but for ease of argument passing
-    bool correctSensorUID = sensorMQTT.verifyTargetUID(payloadCast);  
-    
+    bool correctSensorUID = sensorMQTT.verifyTargetUID(payloadCast, &sensorUID);  
+
     if (!correctSensorUID) {
       std::string prefix("ERROR: Incorrect sensorUID received => ");
       std::string errorMessage = prefix + sensorUID;

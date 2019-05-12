@@ -256,25 +256,23 @@ void SensorMQTT::publishUnknownTypeError(std::string unknownType, std::string id
   }
 */
 
-bool SensorMQTT::verifyTargetUID(char *payload) {
-  std::string sensorUID;
-  this->deserializeStdPayload(payload, &sensorUID);
+bool SensorMQTT::verifyTargetUID(char *payload, std::string *sensorUID) {
+  this->deserializeStdPayload(payload, sensorUID);
 
-  if (sensorUID == std::string(SENSOR_UID)){ return true; }
+  if (*sensorUID == std::string(SENSOR_UID)){ return true; }
   else { return false; }
 }
 
 void SensorMQTT::deserializeStdPayload(char* payload, std::string *sensorUID) {
-  const size_t capacity = JSON_OBJECT_SIZE(1) + 100; // Only 1 KV pair for now + buffer for duplication of const
+  const size_t capacity = JSON_OBJECT_SIZE(1) + 100; // Only 1 KV pair for now + buffer (100 = ~2x safety) for duplication of const
   StaticJsonDocument<capacity> doc;
   DeserializationError error = deserializeJson(doc, payload);
   if (error) {
-      Serial.print("MQTT: deserializeJson() failed with code ");
-      Serial.println(error.c_str());
-
-      // Log error ** => Publish & write to memory
-      // TODO publish error
-
+      std::string errPrefix("MQTT: deserializeJson() failed with code ");
+      std::string errCode(error.c_str());
+      std::string errorMessage = errPrefix + errCode;
+      Serial.println(errorMessage.c_str());
+      this->publishError(errorMessage.c_str());
       return;
   }
 
