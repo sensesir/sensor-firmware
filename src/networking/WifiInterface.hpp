@@ -19,7 +19,7 @@
 class SensorWifi{
 	public:
 		bool connectToWifi(const char* ssid, const char* password);
-		IPAddress setWiFiReconnectingState();
+		bool setWiFiReconnectingState();
 		void flashWifiLED();
 		bool connected = false;
 

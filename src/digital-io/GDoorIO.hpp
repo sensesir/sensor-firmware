@@ -17,11 +17,11 @@
 class GDoorIO{
     public:
         // GPIO Pins 
-        int doorSensorPin = DOOR_SENSOR;
-        int relayPin 	  = RELAY_OUT;
-        int wifiLEDPin 	  = WIFI_LED;
-        int hardResetPin  = HARD_RESET;
-        int pulseLength   = ACTUATION_PULSE_LENGTH;		
+        const int doorSensorPin = DOOR_SENSOR;
+        const int relayPin 	  = RELAY_OUT;
+        const int wifiLEDPin 	  = WIFI_LED;
+        const int hardResetPin  = HARD_RESET;
+        const int pulseLength   = ACTUATION_PULSE_LENGTH;		
 
         // State
         struct Door GDoor;

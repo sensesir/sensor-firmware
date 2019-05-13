@@ -4,7 +4,7 @@
 *	Source file	
 *
 *	Author: Josh Perry
-*	Copyright 2018
+*	Copyright 2019
 *
 */
 
@@ -48,7 +48,9 @@ void SensorWifi::printNetworkAllocations() {
 	Serial.println(WiFi.subnetMask());
 }
 
-IPAddress SensorWifi::setWiFiReconnectingState(){
+// Todo: Method needs testing
+bool SensorWifi::setWiFiReconnectingState(){
+	// Reconnection should happen automatically
 	// Start a ticker at interval 500ms
 	Serial.println("WIFI INTERFACE: WiFi connection dropped, attempting to reconnect");
 	while (WiFi.status() != WL_CONNECTED){
@@ -58,24 +60,17 @@ IPAddress SensorWifi::setWiFiReconnectingState(){
 	}
 
 	// Reconnected
-	Serial.println("WIFI INTERFACE: Successfully reconnected");
-	digitalWrite(WIFI_LED, HIGH);
-
-	// Print and return the assigned local IP on reconnection
+	Serial.println("");
+	Serial.print("WIFI INTERFACE: Reconnected to network");
+	
+	// State all info
 	delay(1000);
-	IPAddress ipAddress = WiFi.localIP();
-	IPAddress gatewayIP = WiFi.gatewayIP();
-	Serial.print("WIFI INTERFACE: Assigned LAN IP address = ");
-	Serial.println(ipAddress);
+	printNetworkAllocations();
 
-	// Check if statuc IP is correctly assigned
-	bool correctStaticIP = (ipAddress[0] == gatewayIP[0]) && (ipAddress[1] == gatewayIP[1]) && (ipAddress[2] == gatewayIP[2]) && (ipAddress[3] == currentStaticOctet);
-	if (!correctStaticIP){
-		WiFi.disconnect();
-		// TODO: Add connection method here
-	}
-
-	return ipAddress;
+	// Indicate connected state on LED
+	digitalWrite(WIFI_LED, HIGH);
+	connected = true;
+	return true;
 }
 
 void SensorWifi::flashWifiLED(){

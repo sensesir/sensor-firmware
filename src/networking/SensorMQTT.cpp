@@ -45,6 +45,7 @@ void SensorMQTT::connectDeviceGateway() {
     } else {
       Serial.println("MQTT: Failed to connect to AWS IoT Cloud");
       this->pubSubError(this->state());
+      // Todo: Write error to flash memory
     }
 }
 
@@ -229,10 +230,35 @@ void SensorMQTT::publishError(const char* message) {
 
 // Specific error type
 void SensorMQTT::publishUnknownTypeError(std::string unknownType, std::string identifier) {
-  Serial.print("MQTT: Reporting unknown type => ");
-  Serial.println(unknownType.c_str());
+  std::string errorMessage = "Type: " + unknownType + " | " + "Identifier: " + identifier;
 
-  // TODO: complete
+  // Create topic
+  char topic[256];
+  this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_ERROR);
+
+  // Create payload
+  const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
+  StaticJsonDocument<capacity> payload;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
+  payload[KEY_EVENT] = PUB_ERROR;
+  payload[KEY_MESSAGE] = errorMessage.c_str();
+
+  // Serialize JSON into char
+  int jsonLength = measureJson(payload);
+  char serializedPayload[256];
+  serializeJson(payload, serializedPayload);
+
+  bool success = this->publish(topic, serializedPayload);        
+  if (success) {
+    Serial.print("MQTT: Published message to topic: ");
+    Serial.println(topic);
+    Serial.print("MQTT: Payload => ");
+    serializeJson(payload, Serial);
+    Serial.println("");
+  } else {
+    Serial.print("MQTT: Failed to publish message to topic: ");
+    Serial.println(topic);
+  }
 }
 
 /**

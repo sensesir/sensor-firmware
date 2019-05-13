@@ -26,7 +26,7 @@ void setup() {
   doorIO.initialize();
   
   // Setup Wifi
-  bool connected = wifiInterface.connectToWifi("The FishBowl", "Glennie123");
+  bool connected = wifiInterface.connectToWifi("The Italian Wi-Fi Network", "Ghiselli");
 
   // Setup MQTT
   sensorMQTT.initializeMQTT(messageReceived);     
@@ -38,6 +38,11 @@ void setup() {
 
 void loop() {
   sensorMQTT.loop();
+
+  if (WiFi.status() != WL_CONNECTED){
+    handleWifiReconProcedure();
+  }
+  
   delay(10);
 }
 
@@ -83,6 +88,11 @@ void handleCommand(std::string command) {
   if (command == actuateStr) { doorIO.actuateDoor(); } 
   else if (command == healthStr) { sensorMQTT.publishHealth(); } 
   else { sensorMQTT.publishUnknownTypeError(command, std::string("command")); }
+}
+
+void handleWifiReconProcedure() {
+  wifiInterface.setWiFiReconnectingState();
+  sensorMQTT.publishReconnection();
 }
 
 
