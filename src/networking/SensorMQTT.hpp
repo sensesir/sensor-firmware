@@ -23,6 +23,7 @@
 #include "../config/Configuration.h"
 #include "../../secrets/AWSIoTSecrets.h"
 #include "../utilities/Utilities.h"
+#include "../digital-io/GDoorIO.hpp"
 
 typedef void (*mqttMsgRecCallback)(char*, byte*, unsigned int);
 

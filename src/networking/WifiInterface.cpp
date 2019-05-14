@@ -18,13 +18,13 @@ bool SensorWifi::connectToWifi(const char* ssid, const char* password){
 	// Wait for a connection
 	Serial.print("WIFI INTERFACE: Attempting to connect to WiFi => ");
 	Serial.println(ssid);
-	
+	GDoorIO *doorIO = &GDoorIO::getInstance();
+	doorIO->networkLEDOff();
 	while (WiFi.status() != WL_CONNECTED){
-		delay(500);
+		delay(LED_FLASH_DELAY);
+		doorIO->networkLEDToggleWhite();
 		Serial.print(".");
 	}
-
-	// doorIO->networkLEDFlashWhite();
 
 	Serial.println("");
 	Serial.print("WIFI INTERFACE: Connected to ");
@@ -34,14 +34,7 @@ bool SensorWifi::connectToWifi(const char* ssid, const char* password){
 	delay(1000);
 	printNetworkAllocations();
 
-	// Indicate connected state on LED
-	// GDoorIO *doorIO = GDoorIO::getInstance();
-	// doorIO->networkLEDSetWhite();
-
-	// Temp
-	Serial.print("TEMP: Current door instance name = ");
-	// Serial.println(doorIO->instanceName);
-
+	doorIO->networkLEDSetWhite();
 	connected = true;
 	return true;
 }
@@ -58,11 +51,14 @@ void SensorWifi::printNetworkAllocations() {
 
 // Todo: Method needs testing
 bool SensorWifi::setWiFiReconnectingState(){
-	// Reconnection should happen automatically
-	// Start a ticker at interval 500ms
 	Serial.println("WIFI INTERFACE: WiFi connection dropped, attempting to reconnect");
+	connected = false;
+	
+	GDoorIO *doorIO = &GDoorIO::getInstance();
+	doorIO->networkLEDOff();
 	while (WiFi.status() != WL_CONNECTED){
-		delay(500);
+		delay(LED_FLASH_DELAY);
+		doorIO->networkLEDToggleWhite();
 		Serial.print(".");
 	}
 
@@ -75,7 +71,7 @@ bool SensorWifi::setWiFiReconnectingState(){
 	printNetworkAllocations();
 
 	// Indicate connected state on LED
-
+	doorIO->networkLEDSetWhite();
 	connected = true;
 	return true;
 }

@@ -16,14 +16,13 @@
 void messageReceived(char *topic, byte *payload, unsigned int length);
 
 // Globals
-GDoorIO doorIO;
 SensorWifi wifiInterface;
 SensorMQTT sensorMQTT;
 
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("Firing up Esp!!");
-  doorIO.initialize();
+  GDoorIO::getInstance().initialize();
   
   // Setup Wifi
   bool connected = wifiInterface.connectToWifi("The Italian Wi-Fi Network", "Ghiselli");
@@ -85,7 +84,7 @@ void handleCommand(std::string command) {
   std::string actuateStr(SUB_ACTUATE);    // May need to improve this
   std::string healthStr(SUB_HEALTH_PING);
   
-  if (command == actuateStr) { doorIO.actuateDoor(); } 
+  if (command == actuateStr) { GDoorIO::getInstance().actuateDoor(); } 
   else if (command == healthStr) { sensorMQTT.publishHealth(); } 
   else { sensorMQTT.publishUnknownTypeError(command, std::string("command")); }
 }

@@ -16,6 +16,8 @@
 
 class GDoorIO {
     public:
+        static GDoorIO& getInstance();
+
         // GPIO Pins 
         const int networkLEDRed   = NETWORK_LED_RED;
         const int networkLEDGreen = NETWORK_LED_GREEN;
@@ -34,20 +36,26 @@ class GDoorIO {
         void actuateDoor();
 
         // LED states
+        void networkLEDOff();
         void networkLEDSetWhite();
-        void networkLEDFlashWhite();
+        void networkLEDToggleWhite();
         void networkLEDFSetPurple();
-        void networkLEDFlashPurple();
+        void networkLEDTogglePurple();
+        void networkLEDSetCyan();
+        void networkLEDToggleCyan();
         void networkLEDSetBlue();
-        void networkLEDFlashBlue();
+        void networkLEDToggleBlue();
+        void networkLEDSetRed();
 
-    private:    
+    private:   
+        // Singleton handling
+        GDoorIO();
+        GDoorIO(GDoorIO const&);              // Don't Implement
+        void operator=(GDoorIO const&);       // Don't implement
+
         void initializeState();
         void initializeGPIOPins();
-        void updateDoorState(); 
-
-        // LED states
-        void networkLEDOff();
+        void updateDoorState();         
 };
 
 #endif

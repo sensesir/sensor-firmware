@@ -23,6 +23,9 @@ void SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
     wifiClient.setClientRSACert(&client_crt, &key);
     setClient(wifiClient);
 
+    // Set indicator LED (solid colour because of blocking functions in external lib)
+    GDoorIO::getInstance().networkLEDSetCyan();
+
     // Set time zone - necessary for AWS MQTT [todo: investigate why]
     this->ntpConnect();
     this->setServer(AWS_IOT_DEVICE_GATEWAY, 8883);
@@ -42,9 +45,12 @@ void SensorMQTT::connectDeviceGateway() {
 
     if (success) {
       Serial.println("MQTT: Successfully connected to AWS IoT Cloud");
+      GDoorIO::getInstance().networkLEDSetBlue();
     } else {
       Serial.println("MQTT: Failed to connect to AWS IoT Cloud");
       this->pubSubError(this->state());
+      GDoorIO::getInstance().networkLEDSetRed();
+
       // Todo: Write error to flash memory
     }
 }

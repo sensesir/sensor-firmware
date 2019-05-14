@@ -7,6 +7,14 @@
 
 #include "GDoorIO.hpp"
 
+// Singleton handling
+GDoorIO& GDoorIO::getInstance() {
+    static GDoorIO instance;
+    return instance;
+}
+
+GDoorIO::GDoorIO() {}
+
 void GDoorIO::initialize() {
     this->initializeGPIOPins();
     this->initializeState();
@@ -67,16 +75,11 @@ void GDoorIO::networkLEDSetWhite() {
     digitalWrite(networkLEDBlue, HIGH);
 } 
 
-void GDoorIO::networkLEDFlashWhite() {
-    this->networkLEDSetWhite();
-
-    while(true) {
-        delay(LED_FLASH_DELAY);
-        int state = digitalRead(networkLEDRed);
-        digitalWrite(networkLEDRed, !state);
-        digitalWrite(networkLEDGreen, !state);
-        digitalWrite(networkLEDBlue, !state);
-    }
+void GDoorIO::networkLEDToggleWhite() {
+    int state = digitalRead(networkLEDRed);
+    digitalWrite(networkLEDRed, !state);
+    digitalWrite(networkLEDGreen, !state);
+    digitalWrite(networkLEDBlue, !state);
 }
 
 void GDoorIO::networkLEDFSetPurple(){
@@ -85,16 +88,22 @@ void GDoorIO::networkLEDFSetPurple(){
     digitalWrite(networkLEDBlue, HIGH);
 }
 
-void GDoorIO::networkLEDFlashPurple() {
-    this->networkLEDOff();
-    this->networkLEDFlashPurple();
+void GDoorIO::networkLEDTogglePurple() {
+    int state = digitalRead(networkLEDRed);
+    digitalWrite(networkLEDRed, !state);
+    digitalWrite(networkLEDBlue, !state);
+}
 
-    while(true) {
-        delay(LED_FLASH_DELAY);
-        int state = digitalRead(networkLEDRed);
-        digitalWrite(networkLEDRed, !state);
-        digitalWrite(networkLEDBlue, !state);
-    }
+void GDoorIO::networkLEDSetCyan() {
+    this->networkLEDOff();
+    digitalWrite(networkLEDGreen, HIGH);
+    digitalWrite(networkLEDBlue, HIGH);
+}
+
+void GDoorIO::networkLEDToggleCyan() {
+    int state = digitalRead(networkLEDGreen);
+    digitalWrite(networkLEDGreen, !state);
+    digitalWrite(networkLEDBlue, !state);
 }
 
 void GDoorIO::networkLEDSetBlue() {
@@ -102,14 +111,13 @@ void GDoorIO::networkLEDSetBlue() {
     digitalWrite(networkLEDBlue, HIGH);
 }
 
-void GDoorIO::networkLEDFlashBlue(){
-    this->networkLEDOff();
-    this->networkLEDSetBlue();
+void GDoorIO::networkLEDToggleBlue(){
+    int state = digitalRead(networkLEDBlue);
+    digitalWrite(networkLEDBlue, !state);
+}
 
-    while(true) {
-        delay(LED_FLASH_DELAY);
-        int state = digitalRead(networkLEDBlue);
-        digitalWrite(networkLEDBlue, !state);
-    }
+void GDoorIO::networkLEDSetRed() {
+    this->networkLEDOff();
+    digitalWrite(networkLEDRed, HIGH);
 }
 
