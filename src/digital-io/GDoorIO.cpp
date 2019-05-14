@@ -14,12 +14,14 @@ void GDoorIO::initialize() {
 
 void GDoorIO::initializeGPIOPins() {
     Serial.println("Setting GPIO Pins to correct IO state");
+    pinMode(networkLEDRed, OUTPUT);
+    pinMode(networkLEDGreen, OUTPUT);
+    pinMode(networkLEDBlue, OUTPUT);
+    this->networkLEDOff();
+
     pinMode(doorSensorPin, INPUT);
-    pinMode(hardResetPin, INPUT);
-    pinMode(wifiLEDPin, OUTPUT);
-    digitalWrite(wifiLEDPin, LOW);
-    // pinMode(relayPin, OUTPUT);
-    // digitalWrite(relayPin, LOW);
+    pinMode(relayDriverPin, OUTPUT);
+    digitalWrite(relayDriverPin, LOW);
     
     // Set all unused pins to high Z
     for (char pin : unusedPins) {
@@ -49,3 +51,65 @@ void GDoorIO::updateDoorState() {
 void GDoorIO::actuateDoor() {
     // TODO:
 }
+
+// LED management
+
+void GDoorIO::networkLEDOff() {
+    digitalWrite(networkLEDRed, LOW);
+    digitalWrite(networkLEDGreen, LOW);
+    digitalWrite(networkLEDBlue, LOW);    
+}
+
+void GDoorIO::networkLEDSetWhite() {
+    this->networkLEDOff();
+    digitalWrite(networkLEDRed, HIGH);
+    digitalWrite(networkLEDGreen, HIGH);
+    digitalWrite(networkLEDBlue, HIGH);
+} 
+
+void GDoorIO::networkLEDFlashWhite() {
+    this->networkLEDSetWhite();
+
+    while(true) {
+        delay(LED_FLASH_DELAY);
+        int state = digitalRead(networkLEDRed);
+        digitalWrite(networkLEDRed, !state);
+        digitalWrite(networkLEDGreen, !state);
+        digitalWrite(networkLEDBlue, !state);
+    }
+}
+
+void GDoorIO::networkLEDFSetPurple(){
+    this->networkLEDOff();
+    digitalWrite(networkLEDRed, HIGH);
+    digitalWrite(networkLEDBlue, HIGH);
+}
+
+void GDoorIO::networkLEDFlashPurple() {
+    this->networkLEDOff();
+    this->networkLEDFlashPurple();
+
+    while(true) {
+        delay(LED_FLASH_DELAY);
+        int state = digitalRead(networkLEDRed);
+        digitalWrite(networkLEDRed, !state);
+        digitalWrite(networkLEDBlue, !state);
+    }
+}
+
+void GDoorIO::networkLEDSetBlue() {
+    this->networkLEDOff();
+    digitalWrite(networkLEDBlue, HIGH);
+}
+
+void GDoorIO::networkLEDFlashBlue(){
+    this->networkLEDOff();
+    this->networkLEDSetBlue();
+
+    while(true) {
+        delay(LED_FLASH_DELAY);
+        int state = digitalRead(networkLEDBlue);
+        digitalWrite(networkLEDBlue, !state);
+    }
+}
+

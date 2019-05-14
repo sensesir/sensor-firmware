@@ -18,11 +18,13 @@ bool SensorWifi::connectToWifi(const char* ssid, const char* password){
 	// Wait for a connection
 	Serial.print("WIFI INTERFACE: Attempting to connect to WiFi => ");
 	Serial.println(ssid);
+	
 	while (WiFi.status() != WL_CONNECTED){
 		delay(500);
 		Serial.print(".");
-		toggleLED();
 	}
+
+	// doorIO->networkLEDFlashWhite();
 
 	Serial.println("");
 	Serial.print("WIFI INTERFACE: Connected to ");
@@ -33,7 +35,13 @@ bool SensorWifi::connectToWifi(const char* ssid, const char* password){
 	printNetworkAllocations();
 
 	// Indicate connected state on LED
-	digitalWrite(WIFI_LED, HIGH);
+	// GDoorIO *doorIO = GDoorIO::getInstance();
+	// doorIO->networkLEDSetWhite();
+
+	// Temp
+	Serial.print("TEMP: Current door instance name = ");
+	// Serial.println(doorIO->instanceName);
+
 	connected = true;
 	return true;
 }
@@ -56,7 +64,6 @@ bool SensorWifi::setWiFiReconnectingState(){
 	while (WiFi.status() != WL_CONNECTED){
 		delay(500);
 		Serial.print(".");
-		toggleLED();
 	}
 
 	// Reconnected
@@ -68,25 +75,11 @@ bool SensorWifi::setWiFiReconnectingState(){
 	printNetworkAllocations();
 
 	// Indicate connected state on LED
-	digitalWrite(WIFI_LED, HIGH);
+
 	connected = true;
 	return true;
 }
 
-void SensorWifi::flashWifiLED(){
-	Serial.println("Initiating WiFi set up");
-	while(1){
-		toggleLED();
-		delay(1000);
-		toggleLED();
-		delay(1000);
-	}
-}
-
-void SensorWifi::toggleLED(){
-	int state = digitalRead(WIFI_LED);
-	digitalWrite(WIFI_LED, !state);
-}
 
 
 

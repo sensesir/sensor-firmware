@@ -6,7 +6,7 @@
 */
 
 #ifndef GDoorIO_h
-#define DGoorIO_h
+#define GDoorIO_h
 
 // Includes
 #include <Arduino.h>
@@ -14,29 +14,40 @@
 #include <string>
 #include "../config/Configuration.h"
 
-class GDoorIO{
+class GDoorIO {
     public:
         // GPIO Pins 
-        const int doorSensorPin = DOOR_SENSOR;
-        const int relayPin 	  = RELAY_OUT;
-        const int wifiLEDPin 	  = WIFI_LED;
-        const int hardResetPin  = HARD_RESET;
-        const int pulseLength   = ACTUATION_PULSE_LENGTH;		
+        const int networkLEDRed   = NETWORK_LED_RED;
+        const int networkLEDGreen = NETWORK_LED_GREEN;
+        const int networkLEDBlue  = NETWORK_LED_BLUE;
+        const int doorSensorPin   = DOOR_SENSOR;
+        const int relayDriverPin  = RELAY_OUT;	
 
         // State
         struct Door GDoor;
 
         // Unused exposed pins
-        std::vector<char> unusedPins = {0, 2, 3, 13, 14, 15, 16};
+        std::vector<char> unusedPins = {0, 2, 3, 16};
 	
         // Methods
         void initialize();
         void actuateDoor();
 
-    private:
+        // LED states
+        void networkLEDSetWhite();
+        void networkLEDFlashWhite();
+        void networkLEDFSetPurple();
+        void networkLEDFlashPurple();
+        void networkLEDSetBlue();
+        void networkLEDFlashBlue();
+
+    private:    
         void initializeState();
         void initializeGPIOPins();
         void updateDoorState(); 
+
+        // LED states
+        void networkLEDOff();
 };
 
 #endif

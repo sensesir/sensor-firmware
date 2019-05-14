@@ -16,8 +16,8 @@
 void messageReceived(char *topic, byte *payload, unsigned int length);
 
 // Globals
-SensorWifi wifiInterface;
 GDoorIO doorIO;
+SensorWifi wifiInterface;
 SensorMQTT sensorMQTT;
 
 void setup() {

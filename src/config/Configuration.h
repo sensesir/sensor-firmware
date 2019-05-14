@@ -75,4 +75,6 @@ const char DOOR_STATE_OPEN[]    = "open";
 const char DOOR_STATE_CLOSED[]  = "closed";
 const char DOOR_STATE_UNKNOWN[] = "unknown";
 
+#define LED_FLASH_DELAY 500 // ms
+
 #endif

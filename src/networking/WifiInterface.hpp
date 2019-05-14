@@ -13,6 +13,7 @@
 
 #include <ESP8266WiFi.h>
 #include <Arduino.h>
+#include "../digital-io/GDoorIO.hpp"
 #include "../config/Configuration.h"
 
 // Static IP 
@@ -20,7 +21,6 @@ class SensorWifi{
 	public:
 		bool connectToWifi(const char* ssid, const char* password);
 		bool setWiFiReconnectingState();
-		void flashWifiLED();
 		bool connected = false;
 
 	private:
@@ -29,7 +29,6 @@ class SensorWifi{
 		const int* currentGatewayIPArr;
 		const int* currentSubnetIPArr;
 		int currentStaticOctet;
-		void toggleLED();
 		void printNetworkAllocations();
 };
 
