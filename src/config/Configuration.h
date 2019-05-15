@@ -60,21 +60,12 @@ const char KEY_FIRMWARE_VERSION[] = "firmwareVersion";
 const char KEY_STATE[]            = "state";
 const char KEY_MESSAGE[]          = "message";
 
-// Commands 
-typedef enum Command {
-    ACTUATE=0,
-    HEALTH
-} Command;
+const char DOOR_STATE_OPEN_STR[]    = "open";
+const char DOOR_STATE_CLOSED_STR[]  = "closed";
+const char DOOR_STATE_UNKNOWN_STR[] = "unknown";
 
-// Door state
-struct Door {
-    char state[8];
-};
-
-const char DOOR_STATE_OPEN[]    = "open";
-const char DOOR_STATE_CLOSED[]  = "closed";
-const char DOOR_STATE_UNKNOWN[] = "unknown";
-
+// Time constants
 #define LED_FLASH_DELAY 500 // ms
+#define SENSOR_FILTER_DELAY 50  // ms  [check average noise frequency and compare]
 
 #endif

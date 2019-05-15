@@ -20,12 +20,12 @@
  *      a) 01: TX Serial
  *      b) 03: RX Serial
  */
-#define NETWORK_LED_RED 4
-#define NETWORK_LED_GREEN 14
-#define NETWORK_LED_BLUE 5
-#define DOOR_SENSOR 15
+#define NETWORK_LED_RED 5
+#define NETWORK_LED_GREEN 4
+#define NETWORK_LED_BLUE 2
+#define DOOR_SENSOR 13
 #define RELAY_OUT 12
-#define POWER_INDICATOR_LED 13
+#define NETWORK_MODE 14
 
 // Time constants
 #define ACTUATION_PULSE_LENGTH 1500     // miliseconds

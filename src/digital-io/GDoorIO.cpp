@@ -17,7 +17,7 @@ GDoorIO::GDoorIO() {}
 
 void GDoorIO::initialize() {
     this->initializeGPIOPins();
-    this->initializeState();
+    this->setStateToUnknown();
 }
 
 void GDoorIO::initializeGPIOPins() {
@@ -37,8 +37,12 @@ void GDoorIO::initializeGPIOPins() {
     }
 }
 
-void GDoorIO::initializeState() {
-    strcpy(this->GDoor.state, DOOR_STATE_UNKNOWN);
+bool GDoorIO::doorStateChanged() {
+    DoorState oldState = this->gdoor.state;     // Ensure deep copy
+    this->updateDoorState();
+
+    if (this->gdoor.state != oldState) { return true; }
+    else { return false; }
 }
 
 void GDoorIO::updateDoorState() {
@@ -46,14 +50,29 @@ void GDoorIO::updateDoorState() {
     int count = 0;
 	for (int i = 0; i < 10; i++) {
 		if (digitalRead(this->doorSensorPin) == HIGH){
-			strcpy(this->GDoor.state, DOOR_STATE_OPEN);
+			this->setStateToOpen();
             return;
 		}
 
-		delay(100);
+		delay(SENSOR_FILTER_DELAY);
 	}
 
-    strcpy(this->GDoor.state, DOOR_STATE_CLOSED);
+    this->setStateToClosed();
+}
+
+void GDoorIO::setStateToOpen() {
+    this->gdoor.state = DOOR_STATE_OPEN;
+    strcpy(this->gdoor.stateString, DOOR_STATE_OPEN_STR);
+}
+
+void GDoorIO::setStateToClosed() {
+    this->gdoor.state = DOOR_STATE_CLOSED;
+    strcpy(this->gdoor.stateString, DOOR_STATE_CLOSED_STR);
+}
+
+void GDoorIO::setStateToUnknown() {
+    this->gdoor.state = DOOR_STATE_UNKNOWN;
+    strcpy(this->gdoor.stateString, DOOR_STATE_UNKNOWN_STR);
 }
 
 void GDoorIO::actuateDoor() {

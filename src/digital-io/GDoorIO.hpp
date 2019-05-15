@@ -14,6 +14,18 @@
 #include <string>
 #include "../config/Configuration.h"
 
+// Door state
+typedef enum doorState {
+    DOOR_STATE_UNKNOWN = -1,
+    DOOR_STATE_OPEN = 0,
+    DOOR_STATE_CLOSED,
+} DoorState;
+
+struct Door {
+    DoorState state;
+    char stateString[8];
+};
+
 class GDoorIO {
     public:
         static GDoorIO& getInstance();
@@ -26,14 +38,15 @@ class GDoorIO {
         const int relayDriverPin  = RELAY_OUT;	
 
         // State
-        struct Door GDoor;
+        struct Door gdoor;
 
         // Unused exposed pins
-        std::vector<char> unusedPins = {0, 2, 3, 16};
+        std::vector<char> unusedPins = {0, 15, 16};
 	
         // Methods
         void initialize();
         void actuateDoor();
+        bool doorStateChanged();
 
         // LED states
         void networkLEDOff();
@@ -53,9 +66,11 @@ class GDoorIO {
         GDoorIO(GDoorIO const&);              // Don't Implement
         void operator=(GDoorIO const&);       // Don't implement
 
-        void initializeState();
         void initializeGPIOPins();
-        void updateDoorState();         
+        void updateDoorState();    
+        void setStateToOpen();
+        void setStateToClosed();
+        void setStateToUnknown();
 };
 
 #endif
