@@ -36,12 +36,13 @@ void setup() {
 }
 
 void loop() {
-  sensorMQTT.loop();
+  bool clientConnected = sensorMQTT.loop();
 
-  if (WiFi.status() != WL_CONNECTED){
-    handleWifiReconProcedure();
-  }
-  
+  // Door state update
+
+  // Reconnection checks
+  if (WiFi.status() != WL_CONNECTED) { handleWifiReconProcedure(); }
+  if (!clientConnected) { reconnectMQTTClient(); }
   delay(10);
 }
 
@@ -92,6 +93,10 @@ void handleCommand(std::string command) {
 void handleWifiReconProcedure() {
   wifiInterface.setWiFiReconnectingState();
   sensorMQTT.publishReconnection();
+}
+
+void reconnectMQTTClient() {
+  
 }
 
 

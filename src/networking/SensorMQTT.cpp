@@ -55,6 +55,12 @@ void SensorMQTT::connectDeviceGateway() {
     }
 }
 
+/*
+void SensorMQTT::reconnectClientSync() {
+  // Todo
+}
+*/
+
 void SensorMQTT::subscribeToTopics() {
   Serial.println("MQTT: Subscribing sensor client to topics");
   std::vector<const char*> SUBSCRIBE_TOPICS = {SUB_ACTUATE, SUB_HEALTH_PING};
