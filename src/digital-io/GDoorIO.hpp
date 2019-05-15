@@ -41,6 +41,7 @@ class GDoorIO {
         struct Door gdoor;
 
         // Unused exposed pins
+        // Reserved pins: 1, 3 [Tx, Rx]
         std::vector<char> unusedPins = {0, 15, 16};
 	
         // Methods

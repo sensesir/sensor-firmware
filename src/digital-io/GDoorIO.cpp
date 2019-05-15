@@ -76,7 +76,10 @@ void GDoorIO::setStateToUnknown() {
 }
 
 void GDoorIO::actuateDoor() {
-    // TODO:
+    Serial.println("DOOR IO: Actuating door");
+    digitalWrite(relayDriverPin, HIGH);
+    delay(ACTUATION_PULSE_LENGTH);
+    digitalWrite(relayDriverPin, LOW);
 }
 
 // LED management

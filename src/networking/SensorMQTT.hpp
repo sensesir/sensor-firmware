@@ -36,7 +36,7 @@ class SensorMQTT: public PubSubClient{
         
         // Publish methods
         void publishBootEvent(bool firstBoot);
-        void publishDoorState(const char* doorState); 
+        void publishDoorState(); 
         void publishReconnection();
         void publishHealth();
         void publishError(const char* message);

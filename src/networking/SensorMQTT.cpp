@@ -122,7 +122,7 @@ void SensorMQTT::publishBootEvent(bool firstBoot) {
   }
 }
 
-void SensorMQTT::publishDoorState(const char* doorState) {
+void SensorMQTT::publishDoorState() {
   // Create topic
   char topic[256];
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_DOOR_STATE);
@@ -132,7 +132,7 @@ void SensorMQTT::publishDoorState(const char* doorState) {
   StaticJsonDocument<capacity> payload;
   payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_DOOR_STATE;
-  payload[KEY_STATE] = doorState;
+  payload[KEY_STATE] = GDoorIO::getInstance().gdoor.stateString;    // normal char
 
   // Serialize JSON into char
   int jsonLength = measureJson(payload);

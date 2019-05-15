@@ -39,6 +39,8 @@ void loop() {
   bool clientConnected = sensorMQTT.loop();
 
   // Door state update
+  bool newDoorState = GDoorIO::getInstance().doorStateChanged();
+  if(newDoorState) { sensorMQTT.publishDoorState(); }
 
   // Reconnection checks
   if (WiFi.status() != WL_CONNECTED) { handleWifiReconProcedure(); }
