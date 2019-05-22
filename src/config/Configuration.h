@@ -53,6 +53,9 @@ const char PUB_RECONNECT[]  = "reconnect";
 const char PUB_HEALTH[]     = "health";
 const char PUB_ERROR[]      = "error";
 
+// Other events
+const char EVENT_MQTT_CONN_ERROR[] = "mqttConFailure";
+
 // Payload keys
 const char KEY_SENSOR_UID[]       = "sensorUID";
 const char KEY_EVENT[]            = "event";
@@ -67,5 +70,8 @@ const char DOOR_STATE_UNKNOWN_STR[] = "unknown";
 // Time constants
 #define LED_FLASH_DELAY 500 // ms
 #define SENSOR_FILTER_DELAY 50  // ms  [check average noise frequency and compare]
+
+// Number constants
+#define MQTT_RECON_MAX 5
 
 #endif

@@ -25,11 +25,14 @@ void setup() {
   GDoorIO::getInstance().initialize();
   
   // Setup Wifi
-  bool connected = wifiInterface.connectToWifi("ARNILLAS", "sabrabpab");
+  bool connected = wifiInterface.connectToWifi("BRIGNETI", "12345678");
 
   // Setup MQTT
-  sensorMQTT.initializeMQTT(messageReceived);     
-  sensorMQTT.subscribeToTopics();
+  bool mqttConnected  = sensorMQTT.initializeMQTT(messageReceived);     
+  bool mqttSubscribed = sensorMQTT.subscribeToTopics();
+  if (!(mqttConnected && mqttSubscribed)) {
+    mqttFailureLoop();
+  }
 
   // Setup successful: post boot message
   sensorMQTT.publishBootEvent(true);      
@@ -46,6 +49,17 @@ void loop() {
   if (WiFi.status() != WL_CONNECTED) { handleWifiReconProcedure(); }
   if (!clientConnected) { reconnectMQTTClient(); }
   delay(10);
+}
+
+void mqttFailureLoop() {
+  Serial.println("MAIN: Fatal MQTT connection failure - entering error state");
+  GDoorIO::getInstance().networkLEDSetRed();
+  
+  while(true) {
+    // May need: Reset WDT  
+    // Waiting for user reset
+    delay(10);
+  }
 }
 
 void messageReceived(char *topic, byte *payload, unsigned int length) {
@@ -94,11 +108,16 @@ void handleCommand(std::string command) {
 
 void handleWifiReconProcedure() {
   wifiInterface.setWiFiReconnectingState();
+  reconnectMQTTClient();
   sensorMQTT.publishReconnection();
 }
 
 void reconnectMQTTClient() {
-  
+  if (sensorMQTT.reconnectClientSync()) {
+    return;
+  }
+
+  mqttFailureLoop();
 }
 
 

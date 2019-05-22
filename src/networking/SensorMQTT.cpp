@@ -12,7 +12,7 @@ SensorMQTT::SensorMQTT() {
   // Just to init super class
 }
 
-void SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
+bool SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
     Serial.println("MQTT: Instantiating MQTT client");
 
     // Set SSL certs
@@ -35,10 +35,14 @@ void SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
      * Todo: Work out what resource on this function stack is needed by 
      * the connect method. When called outside of this scope cases a crash.
      */
-    this->connectDeviceGateway();
+    if(this->connectDeviceGateway()) {
+      return true;
+    } else {
+      return this->reconnectClientSync();
+    }
 }
 
-void SensorMQTT::connectDeviceGateway() {
+bool SensorMQTT::connectDeviceGateway() {
     Serial.print("MQTT: Attempting to connect to AWS IoT Cloud -> ");
     Serial.println(AWS_IOT_DEVICE_GATEWAY);    
     bool success = this->connect(DEVICE_ID);
@@ -46,22 +50,43 @@ void SensorMQTT::connectDeviceGateway() {
     if (success) {
       Serial.println("MQTT: Successfully connected to AWS IoT Cloud");
       GDoorIO::getInstance().networkLEDSetBlue();
+      return true;
     } else {
       Serial.println("MQTT: Failed to connect to AWS IoT Cloud");
       this->pubSubError(this->state());
-      GDoorIO::getInstance().networkLEDSetRed();
-
+      return false;
       // Todo: Write error to flash memory
     }
 }
 
-/*
-void SensorMQTT::reconnectClientSync() {
-  // Todo
-}
-*/
+bool SensorMQTT::reconnectClientSync() {
+  GDoorIO::getInstance().networkLEDSetCyan();
 
-void SensorMQTT::subscribeToTopics() {
+  // Set SSL certs
+  BearSSL::X509List cert(caCert);
+  BearSSL::X509List client_crt(clientCert);
+  BearSSL::PrivateKey key(privateKey);
+  wifiClient.setTrustAnchors(&cert);
+  wifiClient.setClientRSACert(&client_crt, &key);
+  setClient(wifiClient);
+
+  // Test
+  // this->ntpConnect();
+  // this->setServer(AWS_IOT_DEVICE_GATEWAY, 8883);
+  
+  // Don't think we'll have to reset ntp conn, but potentially may have to
+  for (int reconAttempt = 0; reconAttempt < MQTT_RECON_MAX; reconAttempt++) {
+    Serial.print("MQTT: Attempting synchronous reconnection #");
+    Serial.println(reconAttempt);
+    if (this->connectDeviceGateway()) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool SensorMQTT::subscribeToTopics() {
   Serial.println("MQTT: Subscribing sensor client to topics");
   std::vector<const char*> SUBSCRIBE_TOPICS = {SUB_ACTUATE, SUB_HEALTH_PING};
 
@@ -76,13 +101,14 @@ void SensorMQTT::subscribeToTopics() {
     } else {
       Serial.print("MQTT: Failed to subscribe to ");
       Serial.println(topic);
+      return false;
       
       // TODO: throw error here - sensor shouldn't initialize with failed subscription
-      // Write to EEPROM
-      // Assert false for crash
-      // OR on test bed have an error LED that indicates error state [can then go investigate logs]
+      // Write to EEPROM / some flash mem
     }
   }
+
+  return true;
 }
 
 void SensorMQTT::publishBootEvent(bool firstBoot) {
