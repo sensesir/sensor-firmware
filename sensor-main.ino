@@ -25,7 +25,7 @@ void setup() {
   GDoorIO::getInstance().initialize();
   
   // Setup Wifi
-  bool connected = wifiInterface.connectToWifi("The Italian Wi-Fi Network", "Ghiselli");
+  bool connected = wifiInterface.connectToWifi("ARNILLAS", "sabrabpab");
 
   // Setup MQTT
   sensorMQTT.initializeMQTT(messageReceived);     
