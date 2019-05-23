@@ -25,7 +25,7 @@
 #define NETWORK_LED_BLUE 14
 #define DOOR_SENSOR 13
 #define RELAY_OUT 12
-#define NETWORK_MODE 2
+#define NETWORK_MODE 15
 
 // Time constants
 #define ACTUATION_PULSE_LENGTH 1500     // miliseconds
