@@ -37,7 +37,7 @@ void setup() {
 
   // Setup successful: post boot message
   int connDur = (millis() - connStart) / 1000; // Int div - trunc to whole num is fine
-  sensorMQTT.publishBootEvent(true, connDur);      
+  sensorMQTT.publishBootEvent(false, connDur);      
 }
 
 void loop() {
