@@ -30,14 +30,15 @@ typedef void (*mqttMsgRecCallback)(char*, byte*, unsigned int);
 class SensorMQTT: public PubSubClient{
     public:
         SensorMQTT();
-        void initializeMQTT(mqttMsgRecCallback callback);
-        void connectDeviceGateway();
-        void subscribeToTopics();
+        bool initializeMQTT(mqttMsgRecCallback callback);
+        bool connectDeviceGateway();
+        bool reconnectClientSync();
+        bool subscribeToTopics();
         
         // Publish methods
-        void publishBootEvent(bool firstBoot);
+        void publishBootEvent(bool firstBoot, int connDur);
         void publishDoorState(); 
-        void publishReconnection();
+        void publishReconnection(int reconnDur);
         void publishHealth();
         void publishError(const char* message);
         void publishUnknownTypeError(std::string unknownType, std::string identifier);
