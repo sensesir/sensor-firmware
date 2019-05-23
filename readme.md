@@ -52,4 +52,43 @@ Development will be carried out on different boards and in different contexts, h
       * NODE_DEV - Firmware being written on NodeMCU board (pinouts different from above)
 
 ## Git Workflow
+---
+
+todo
+
+## Firmware functionality
+---
+
+### WiFi
+#### Sequential process
+
+#### Reconnection event
+
+todo
+
+### MQTT
+#### Architecture & Abstraction
+
+#### Messaging Structure
+
+-- Format
+-- Commands
+-- Events
+
+#### Database shadow
+
+### GPIO / Hardware
+#### Pin setting by ENV
+
+#### Singleton Pattern
+
+#### Noise filtering
+
+### Error handling
+
+TODO
+
+### OTA updates
+
+TODO
 
