@@ -5,7 +5,7 @@ This project contains the firmware for the Garage Door IoT sensor, currently run
 
 ## Quick Start
 
-Follow the instructions in the [setup.md file]('docs/setup.md') in order to ensure your machine can communicate with the MCU. There after: 
+Follow the instructions in the [setup.md file](docs/setup.md) in order to ensure your machine can communicate with the MCU. There after: 
 
   1. Clone the repo - development branch
   2. Create the branch you need to work on (see Git workflow below)
