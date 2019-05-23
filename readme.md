@@ -34,7 +34,7 @@ This project uses AWS IoT Core as an MQTT message broker, IoT fleet management c
       * Ensure your certificate and key files **ARE NOT** committed to the repo on any branch
   7. **Policy**: This is AWS terminology for what permissions this device has. We require the device to be able to interface with AWS IoT Core. There is already a Dev policy setup: *GDoorDev*
 
-[alt text](docs/img/aws-certs-download.png)
+![alt text](docs/img/aws-certs-download.png)
 
 ### Prod
 
