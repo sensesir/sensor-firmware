@@ -122,11 +122,12 @@ boolean PubSubClient::connect(const char *id, const char *user, const char *pass
         int result = 0;
 
         if (domain != NULL) {
-            result = _client->connect(this->domain, this->port);
+            result = _client->connect(this->domain, this->port);  // Experiment with adding timeout here
         } else {
             result = _client->connect(this->ip, this->port);
         }
         if (result == 1) {
+            Serial.println("PUBSUB: Successfully opened socket connection with server");
             nextMsgId = 1;
             // Leave room in the buffer for header and variable length field
             uint16_t length = MQTT_MAX_HEADER_SIZE;

@@ -68,10 +68,12 @@ const char DOOR_STATE_CLOSED_STR[]  = "closed";
 const char DOOR_STATE_UNKNOWN_STR[] = "unknown";
 
 // Time constants
-#define LED_FLASH_DELAY 500 // ms
-#define SENSOR_FILTER_DELAY 50  // ms  [check average noise frequency and compare]
+#define LED_FLASH_DELAY 500         // ms
+#define SENSOR_FILTER_DELAY 50      // ms  [check average noise frequency and compare]
+#define RECONNECT_DELAY_MQTT 2500
+#define SETUP_COOL_DOWN 2000
 
 // Number constants
-#define MQTT_RECON_MAX 5
+#define MQTT_RECON_MAX 20
 
 #endif

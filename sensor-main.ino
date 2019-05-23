@@ -46,7 +46,7 @@ void loop() {
   if(newDoorState) { sensorMQTT.publishDoorState(); }
 
   // Reconnection checks
-  if (WiFi.status() != WL_CONNECTED) { handleWifiReconProcedure(); }
+  if (WiFi.status() != WL_CONNECTED) { wifiInterface.setWiFiReconnectingState(); }
   if (!clientConnected) { reconnectMQTTClient(); }
   delay(10);
 }
@@ -106,18 +106,17 @@ void handleCommand(std::string command) {
   else { sensorMQTT.publishUnknownTypeError(command, std::string("command")); }
 }
 
-void handleWifiReconProcedure() {
-  wifiInterface.setWiFiReconnectingState();
-  reconnectMQTTClient();
-  sensorMQTT.publishReconnection();
-}
-
 void reconnectMQTTClient() {
-  if (sensorMQTT.reconnectClientSync()) {
-    return;
+  delay(SETUP_COOL_DOWN);
+  bool reconnected = sensorMQTT.reconnectClientSync(); 
+  bool subscribed = sensorMQTT.subscribeToTopics();
+  
+  if (reconnected && subscribed) {
+    delay(SETUP_COOL_DOWN);
+    sensorMQTT.publishReconnection();
+  } else {
+    mqttFailureLoop();
   }
-
-  mqttFailureLoop();
 }
 
 

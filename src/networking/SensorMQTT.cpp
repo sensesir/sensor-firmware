@@ -70,16 +70,16 @@ bool SensorMQTT::reconnectClientSync() {
   wifiClient.setClientRSACert(&client_crt, &key);
   setClient(wifiClient);
 
-  // Test
-  // this->ntpConnect();
-  // this->setServer(AWS_IOT_DEVICE_GATEWAY, 8883);
+  // Not explicitly required - but to be sure after wifi dropout
+  this->ntpConnect();
   
-  // Don't think we'll have to reset ntp conn, but potentially may have to
   for (int reconAttempt = 0; reconAttempt < MQTT_RECON_MAX; reconAttempt++) {
     Serial.print("MQTT: Attempting synchronous reconnection #");
     Serial.println(reconAttempt);
     if (this->connectDeviceGateway()) {
       return true;
+    } else {
+      delay(RECONNECT_DELAY_MQTT);
     }
   }
 
