@@ -45,7 +45,7 @@ bool SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
 bool SensorMQTT::connectDeviceGateway() {
     Serial.print("MQTT: Attempting to connect to AWS IoT Cloud -> ");
     Serial.println(AWS_IOT_DEVICE_GATEWAY);    
-    bool success = this->connect(DEVICE_ID);
+    bool success = this->connect(SENSOR_UID);
 
     if (success) {
       Serial.println("MQTT: Successfully connected to AWS IoT Cloud");
