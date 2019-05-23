@@ -64,7 +64,7 @@ bool SensorWifi::setWiFiReconnectingState(){
 
 	// Reconnected
 	Serial.println("");
-	Serial.print("WIFI INTERFACE: Reconnected to network");
+	Serial.println("WIFI INTERFACE: Reconnected to network");
 	
 	// State all info
 	delay(1000);

@@ -53,19 +53,28 @@ const char PUB_RECONNECT[]  = "reconnect";
 const char PUB_HEALTH[]     = "health";
 const char PUB_ERROR[]      = "error";
 
+// Other events
+const char EVENT_MQTT_CONN_ERROR[] = "mqttConFailure";
+
 // Payload keys
 const char KEY_SENSOR_UID[]       = "sensorUID";
 const char KEY_EVENT[]            = "event";
 const char KEY_FIRMWARE_VERSION[] = "firmwareVersion";
 const char KEY_STATE[]            = "state";
 const char KEY_MESSAGE[]          = "message";
+const char KEY_DURATION[]         = "duration";
 
 const char DOOR_STATE_OPEN_STR[]    = "open";
 const char DOOR_STATE_CLOSED_STR[]  = "closed";
 const char DOOR_STATE_UNKNOWN_STR[] = "unknown";
 
 // Time constants
-#define LED_FLASH_DELAY 500 // ms
-#define SENSOR_FILTER_DELAY 50  // ms  [check average noise frequency and compare]
+#define LED_FLASH_DELAY 500         // ms
+#define SENSOR_FILTER_DELAY 50      // ms  [check average noise frequency and compare]
+#define RECONNECT_DELAY_MQTT 2500
+#define SETUP_COOL_DOWN 2000
+
+// Number constants
+#define MQTT_RECON_MAX 20
 
 #endif

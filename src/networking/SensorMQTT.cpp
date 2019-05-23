@@ -12,7 +12,7 @@ SensorMQTT::SensorMQTT() {
   // Just to init super class
 }
 
-void SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
+bool SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
     Serial.println("MQTT: Instantiating MQTT client");
 
     // Set SSL certs
@@ -35,10 +35,14 @@ void SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
      * Todo: Work out what resource on this function stack is needed by 
      * the connect method. When called outside of this scope cases a crash.
      */
-    this->connectDeviceGateway();
+    if(this->connectDeviceGateway()) {
+      return true;
+    } else {
+      return this->reconnectClientSync();
+    }
 }
 
-void SensorMQTT::connectDeviceGateway() {
+bool SensorMQTT::connectDeviceGateway() {
     Serial.print("MQTT: Attempting to connect to AWS IoT Cloud -> ");
     Serial.println(AWS_IOT_DEVICE_GATEWAY);    
     bool success = this->connect(DEVICE_ID);
@@ -46,22 +50,43 @@ void SensorMQTT::connectDeviceGateway() {
     if (success) {
       Serial.println("MQTT: Successfully connected to AWS IoT Cloud");
       GDoorIO::getInstance().networkLEDSetBlue();
+      return true;
     } else {
       Serial.println("MQTT: Failed to connect to AWS IoT Cloud");
       this->pubSubError(this->state());
-      GDoorIO::getInstance().networkLEDSetRed();
-
+      return false;
       // Todo: Write error to flash memory
     }
 }
 
-/*
-void SensorMQTT::reconnectClientSync() {
-  // Todo
-}
-*/
+bool SensorMQTT::reconnectClientSync() {
+  GDoorIO::getInstance().networkLEDSetCyan();
 
-void SensorMQTT::subscribeToTopics() {
+  // Set SSL certs
+  BearSSL::X509List cert(caCert);
+  BearSSL::X509List client_crt(clientCert);
+  BearSSL::PrivateKey key(privateKey);
+  wifiClient.setTrustAnchors(&cert);
+  wifiClient.setClientRSACert(&client_crt, &key);
+  setClient(wifiClient);
+
+  // Not explicitly required - but to be sure after wifi dropout
+  this->ntpConnect();
+  
+  for (int reconAttempt = 0; reconAttempt < MQTT_RECON_MAX; reconAttempt++) {
+    Serial.print("MQTT: Attempting synchronous reconnection #");
+    Serial.println(reconAttempt);
+    if (this->connectDeviceGateway()) {
+      return true;
+    } else {
+      delay(RECONNECT_DELAY_MQTT);
+    }
+  }
+
+  return false;
+}
+
+bool SensorMQTT::subscribeToTopics() {
   Serial.println("MQTT: Subscribing sensor client to topics");
   std::vector<const char*> SUBSCRIBE_TOPICS = {SUB_ACTUATE, SUB_HEALTH_PING};
 
@@ -76,25 +101,27 @@ void SensorMQTT::subscribeToTopics() {
     } else {
       Serial.print("MQTT: Failed to subscribe to ");
       Serial.println(topic);
+      return false;
       
       // TODO: throw error here - sensor shouldn't initialize with failed subscription
-      // Write to EEPROM
-      // Assert false for crash
-      // OR on test bed have an error LED that indicates error state [can then go investigate logs]
+      // Write to EEPROM / some flash mem
     }
   }
+
+  return true;
 }
 
-void SensorMQTT::publishBootEvent(bool firstBoot) {
+void SensorMQTT::publishBootEvent(bool firstBoot, int connDur) {
   // Create topic
   char topic[256];
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_BOOT);
 
   // Create payload using JSON lib
-  const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
+  const int capacity = JSON_OBJECT_SIZE(4) + 120;     // 4 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
   payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_FIRMWARE_VERSION] = FIRMWARE_VERSION; 
+  payload[KEY_DURATION] = connDur;
   if (firstBoot) {
     payload[KEY_EVENT] = PUB_FIRST_BOOT;
   } else {
@@ -152,16 +179,17 @@ void SensorMQTT::publishDoorState() {
   }
 }
 
-void SensorMQTT::publishReconnection() {
+void SensorMQTT::publishReconnection(int reconnDur) {
   // Create topic
   char topic[256];
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_RECONNECT);
 
   // Create payload
-  const int capacity = JSON_OBJECT_SIZE(2) + 120;     // 2 KV pairs + 120 bytes spare for const input duplication
+  const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 2 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
   payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_RECONNECT;
+  payload[KEY_DURATION] = reconnDur;
 
   // Serialize JSON into char
   int jsonLength = measureJson(payload);
