@@ -111,16 +111,17 @@ bool SensorMQTT::subscribeToTopics() {
   return true;
 }
 
-void SensorMQTT::publishBootEvent(bool firstBoot) {
+void SensorMQTT::publishBootEvent(bool firstBoot, int connDur) {
   // Create topic
   char topic[256];
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_BOOT);
 
   // Create payload using JSON lib
-  const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
+  const int capacity = JSON_OBJECT_SIZE(4) + 120;     // 4 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
   payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_FIRMWARE_VERSION] = FIRMWARE_VERSION; 
+  payload[KEY_DURATION] = connDur;
   if (firstBoot) {
     payload[KEY_EVENT] = PUB_FIRST_BOOT;
   } else {
@@ -178,16 +179,17 @@ void SensorMQTT::publishDoorState() {
   }
 }
 
-void SensorMQTT::publishReconnection() {
+void SensorMQTT::publishReconnection(int reconnDur) {
   // Create topic
   char topic[256];
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_RECONNECT);
 
   // Create payload
-  const int capacity = JSON_OBJECT_SIZE(2) + 120;     // 2 KV pairs + 120 bytes spare for const input duplication
+  const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 2 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
   payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_RECONNECT;
+  payload[KEY_DURATION] = reconnDur;
 
   // Serialize JSON into char
   int jsonLength = measureJson(payload);

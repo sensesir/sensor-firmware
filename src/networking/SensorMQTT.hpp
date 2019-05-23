@@ -36,9 +36,9 @@ class SensorMQTT: public PubSubClient{
         bool subscribeToTopics();
         
         // Publish methods
-        void publishBootEvent(bool firstBoot);
+        void publishBootEvent(bool firstBoot, int connDur);
         void publishDoorState(); 
-        void publishReconnection();
+        void publishReconnection(int reconnDur);
         void publishHealth();
         void publishError(const char* message);
         void publishUnknownTypeError(std::string unknownType, std::string identifier);

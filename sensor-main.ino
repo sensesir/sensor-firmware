@@ -28,6 +28,7 @@ void setup() {
   bool connected = wifiInterface.connectToWifi("BRIGNETI", "12345678");
 
   // Setup MQTT
+  int connStart = millis();
   bool mqttConnected  = sensorMQTT.initializeMQTT(messageReceived);     
   bool mqttSubscribed = sensorMQTT.subscribeToTopics();
   if (!(mqttConnected && mqttSubscribed)) {
@@ -35,7 +36,8 @@ void setup() {
   }
 
   // Setup successful: post boot message
-  sensorMQTT.publishBootEvent(true);      
+  int connDur = (millis() - connStart) / 1000; // Int div - trunc to whole num is fine
+  sensorMQTT.publishBootEvent(true, connDur);      
 }
 
 void loop() {
@@ -108,12 +110,14 @@ void handleCommand(std::string command) {
 
 void reconnectMQTTClient() {
   delay(SETUP_COOL_DOWN);
+  int reconnStart = millis();
   bool reconnected = sensorMQTT.reconnectClientSync(); 
   bool subscribed = sensorMQTT.subscribeToTopics();
   
   if (reconnected && subscribed) {
+    int reconnDur = (millis() - reconnStart) / 1000; // Int div is fine - trunc to whole num
     delay(SETUP_COOL_DOWN);
-    sensorMQTT.publishReconnection();
+    sensorMQTT.publishReconnection(reconnDur);
   } else {
     mqttFailureLoop();
   }

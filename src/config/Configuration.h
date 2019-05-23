@@ -62,6 +62,7 @@ const char KEY_EVENT[]            = "event";
 const char KEY_FIRMWARE_VERSION[] = "firmwareVersion";
 const char KEY_STATE[]            = "state";
 const char KEY_MESSAGE[]          = "message";
+const char KEY_DURATION[]         = "duration";
 
 const char DOOR_STATE_OPEN_STR[]    = "open";
 const char DOOR_STATE_CLOSED_STR[]  = "closed";
