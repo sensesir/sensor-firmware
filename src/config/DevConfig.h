@@ -36,3 +36,4 @@ const int8_t TIME_ZONE = +2;            // UTC+2 => JHB
 // Networking
 const char AWS_IOT_DEVICE_GATEWAY[] = "anwaqu8y2zf77-ats.iot.eu-west-1.amazonaws.com";
 const char SERVER_UID[] = "eu-west-1.dev";
+const char SENSOR_UID[] = "SensorTFDev";

@@ -1,2 +1,4 @@
 .vscode
-secrets/*
+secrets/AWSIoTSecrets.h
+secrets/*.pem.crt
+secrets/*.pem.key
