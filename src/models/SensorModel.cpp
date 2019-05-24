@@ -46,7 +46,8 @@ void SensorModel::initializeModel() {
     this->readModelDataFromDisk(&modelData);
 
     // Check if there is any data initialized
-    if (modelData.empty()) {
+    if (modelData.empty()) {                        // Could be returning false
+        Serial.println("MODEL: Data structures not init - left empty");
         this->sensorDataLoaded = false;
         return;
     }
@@ -76,7 +77,6 @@ void SensorModel::initializeModel() {
 }
 
 void SensorModel::readModelDataFromDisk(std::vector< std::vector<std::string> > *modelData) {
-    Serial.println("MODEL: Attempting to read sensor model data from disk");
 	EEPROM.begin(512);
 
     // Check if there's any data written in our convention
@@ -84,32 +84,54 @@ void SensorModel::readModelDataFromDisk(std::vector< std::vector<std::string> > 
     char startCR   = EEPROM.read(1);
     char startLF   = EEPROM.read(2);
 
-    if (!(startByte == DATA_START && startCR == CR && startLF == LF)) {
+    bool startProtocol = (startByte == DATA_START) && (startCR == CR) && (startLF == LF);
+    if (!startProtocol) {
         Serial.println("MODEL: No data to read");
         return;
     }
 
     // Data exists, read it in until end sequence is encountered
+    Serial.println("MODEL: Found start bytes, continuing to read flash");
     std::string key;
     std::string value;
     uint16_t memAddress = 3;
 
-    while (memAddress < 513) {
+    while (memAddress < 512) {
         this->readKVPair(&memAddress, &key, &value);
         std::vector<std::string> dataPair = {key, value};
         modelData->push_back(dataPair);
-
+        
         if (this->endRead(&memAddress)) { break; }
+        key.clear();
+        value.clear();
     }
 
     EEPROM.end();    
 }
 
 void SensorModel::readKVPair(uint16_t *addressPtr, std::string *key, std::string *value) {
-    bool isKey = true;
+    // Serial.println("MODEL: Reading KV pair");
     uint16_t maxLoop = 512 - *addressPtr;
     
-    for (int i = 0; i <  maxLoop; i++) {
+    // Serial.print("MODEL: Key => ");
+    for (uint16_t i = 0; i < maxLoop; i++) {
+        char byte = EEPROM.read(*addressPtr);
+
+        if (byte == JSON_SEPARATOR) {
+            *addressPtr += 1;
+            break;
+        }
+
+        key->push_back(byte);
+        // Serial.print(byte);
+        *addressPtr += 1;
+    }
+
+    // Serial.println("");
+    // Serial.print("MODEL: Value => ");
+    maxLoop = 512 - *addressPtr;
+    
+    for (uint16_t j = 0; j < maxLoop; j++) {
         char byte = EEPROM.read(*addressPtr);
 
         if (byte == CR) {
@@ -117,6 +139,7 @@ void SensorModel::readKVPair(uint16_t *addressPtr, std::string *key, std::string
             byte = EEPROM.read(*addressPtr);
             if (byte == LF) {
                 *addressPtr += 1;
+                // Serial.println("");
                 return;
             } else {
                 Serial.println("MODEL: Error in persistance interface protocol");
@@ -125,14 +148,9 @@ void SensorModel::readKVPair(uint16_t *addressPtr, std::string *key, std::string
             }
         }
 
-        if (byte == JSON_SEPARATOR) {
-            *addressPtr += 1;
-            isKey = false;
-            continue;
-        }
-
-        if (isKey) { key->push_back(byte); }
-        else { value->push_back(byte); }
+        value->push_back(byte);
+        // Serial.print(byte);
+        *addressPtr += 1;
     }
 }
 
@@ -157,7 +175,7 @@ void SensorModel::writeModelDataToDisk() {
     EEPROM.write(2, LF);
 
     uint16_t memAddress = 3;
-    this->writeKVPair(&memAddress, SENSOR_UID, this->sensorUID);
+    this->writeKVPair(&memAddress, KEY_SENSOR_UID, this->sensorUID);
     this->writeKVPair(&memAddress, KEY_SSID, this->wifiSSID);
     this->writeKVPair(&memAddress, KEY_WIFI_PASSWORD, this->wifiPassword);
 
@@ -170,8 +188,12 @@ void SensorModel::writeModelDataToDisk() {
 }
 
 void SensorModel::writeKVPair(uint16_t *addressPtr, const char* key, char* value) {
+    Serial.println("MODEL: Writing KV pair to disk");
+    Serial.print("MODEL: Key => ");
+
     for (int i = 0; i < strlen(key); i++) {
         EEPROM.write(*addressPtr, key[i]);
+        Serial.print(key[i]);
         *addressPtr += 1;
     }
 
@@ -179,10 +201,14 @@ void SensorModel::writeKVPair(uint16_t *addressPtr, const char* key, char* value
     EEPROM.write(*addressPtr, JSON_SEPARATOR);
     *addressPtr += 1;
 
+    Serial.println("");
+    Serial.print("MODEL: Value => ");
     for (int i = 0; i < strlen(value); i++) {
         EEPROM.write(*addressPtr, value[i]);
+        Serial.print(value[i]);
         *addressPtr += 1;
     }
+    Serial.println("");
 
     // Terminator
     EEPROM.write(*addressPtr, CR);
@@ -199,4 +225,3 @@ void SensorModel::clearEEPROM() {
     EEPROM.end();
     Serial.println("MODEL: Cleared EEPROM flash mem");
 }
-

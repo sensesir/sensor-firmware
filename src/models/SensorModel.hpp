@@ -9,18 +9,19 @@
 #ifndef SENSORMODEL_H
 #define SENSORMODEL_H
 
+#include <Arduino.h>
 #include <EEPROM.h>
-#include <hardwareSerial.h>
+// #include <hardwareSerial.h>
 #include <vector>
 #include <string>
 #include "../config/Configuration.h"
 
 // Specific to current version of data persistance
-static const char DATA_START = 2;
-static const char DATA_END = 0;
-static const char CR = 13;
-static const char LF = 10;
-static const char JSON_SEPARATOR = 58;
+const char DATA_START = 2;
+const char DATA_END = 0;
+const char CR = 13;
+const char LF = 10;
+const char JSON_SEPARATOR = 58;
 
 class SensorModel {
     public:

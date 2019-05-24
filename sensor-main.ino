@@ -24,9 +24,11 @@ void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("Firing up Esp!!");
   GDoorIO::getInstance().initialize();
+  bool sensorInitialised = SensorModel::getInstance().sensorDataLoaded;
 
-  if (!SensorModel::getInstance().sensorDataLoaded) {
-    // Todo here
+  if (!sensorInitialised) {
+    Serial.println("MAIN: Sensor not initialized");
+    // TODO: Enter AP mode
   }
   
   wifiInterface.connectToWifi();

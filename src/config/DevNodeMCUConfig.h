@@ -44,7 +44,7 @@ const char MQTT_CONN_ERR_ENDPOINT[] = "https://eu4nnl75bb.execute-api.eu-west-1.
 const char API_KEY[] = "8sBkjUhVQ9lZP3uigrpB3e2C66dmtaSaJwC3Mmy7";
 
 // Conditional WiFi setting
-#define USE_DEV_MODEL_DATA
+// #define USE_DEV_MODEL_DATA
 
 #ifdef USE_DEV_MODEL_DATA
 const char SENSOR_UID[] = "SensorJPDev";
