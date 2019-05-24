@@ -27,7 +27,7 @@
 #define ACTUATION_PULSE_LENGTH 1500     // miliseconds
 
 // Misc
-// #define SENSOR_UID_LENGTH 36            // E.g: 073f04a4-0b9b-4a00-9b11-89709a3ccd1f
+#define SENSOR_UID_LENGTH 36            // E.g: 073f04a4-0b9b-4a00-9b11-89709a3ccd1f
 
 // Time zone constants
 const int8_t TIME_ZONE = +2;            // UTC+2 => JHB
@@ -36,4 +36,12 @@ const int8_t TIME_ZONE = +2;            // UTC+2 => JHB
 // Networking
 const char AWS_IOT_DEVICE_GATEWAY[] = "anwaqu8y2zf77-ats.iot.eu-west-1.amazonaws.com";
 const char SERVER_UID[] = "eu-west-1.dev";
+
+// Conditional WiFi setting
+#define USE_DEV_MODEL_DATA
+
+#ifdef USE_DEV_MODEL_DATA
 const char SENSOR_UID[] = "SensorTFDev";
+const char WIFI_SSID[] = "";
+const char WIFI_PASSWORD[] = "";
+#endif

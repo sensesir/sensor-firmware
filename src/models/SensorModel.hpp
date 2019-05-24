@@ -27,9 +27,16 @@ class SensorModel {
         static SensorModel& getInstance();
 
         bool sensorDataLoaded = false;
-        char sensorUID[36];
+        char sensorUID[SENSOR_UID_LENGTH + 1];  // +1 for null terminator
         char wifiSSID[50];          // Arbitrary, but surely no one has an SSID/password longer than this?
         char wifiPassword[50];   
+
+        void setModelUID(std::string newSensorUID);
+        void setModelSSID(std::string ssid);
+        void setModelPassword(std::string password); 
+
+        void writeModelDataToDisk();
+        void clearEEPROM();
 
     private: 
         // Singleton handling
@@ -41,6 +48,7 @@ class SensorModel {
         void readModelDataFromDisk(std::vector< std::vector<std::string> > *modelData);
         void readKVPair(uint16_t *addressPtr, std::string *key, std::string *value);
         bool endRead(uint16_t *addressPtr);
+        void writeKVPair(uint16_t *addressPtr, const char* key, char* value);
 };
 
 #endif

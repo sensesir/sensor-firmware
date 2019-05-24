@@ -10,6 +10,11 @@
 
 #include "WifiInterface.hpp"
 
+bool SensorWifi::connectToWifi() {
+	SensorModel *sensorModel = &SensorModel::getInstance();
+	return this->connectToWifi(sensorModel->wifiSSID, sensorModel->wifiPassword);
+}
+
 bool SensorWifi::connectToWifi(const char* ssid, const char* password){
 	WiFi.hostname(SENSOR_UID);
 	WiFi.mode(WIFI_STA);

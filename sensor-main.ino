@@ -10,6 +10,7 @@
 #include "./src/networking/WifiInterface.hpp"
 #include "./src/digital-io/GDoorIO.hpp"
 #include "./src/networking/SensorMQTT.hpp"
+#include "./src/models/SensorModel.hpp"
 #include "./src/utilities/Utilities.h"
 
 // Function prototypes
@@ -23,21 +24,13 @@ void setup() {
   Serial.begin(BAUD_RATE);
   Serial.println("Firing up Esp!!");
   GDoorIO::getInstance().initialize();
-  
-  // Setup Wifi
-  bool connected = wifiInterface.connectToWifi("BRIGNETI", "12345678");
 
-  // Setup MQTT
-  int connStart = millis();
-  bool mqttConnected  = sensorMQTT.initializeMQTT(messageReceived);     
-  bool mqttSubscribed = sensorMQTT.subscribeToTopics();
-  if (!(mqttConnected && mqttSubscribed)) {
-    mqttFailureLoop();
+  if (!SensorModel::getInstance().sensorDataLoaded) {
+    // Todo here
   }
-
-  // Setup successful: post boot message
-  int connDur = (millis() - connStart) / 1000; // Int div - trunc to whole num is fine
-  sensorMQTT.publishBootEvent(false, connDur);      
+  
+  wifiInterface.connectToWifi();
+  setupMQTT(false);
 }
 
 void loop() {
@@ -51,6 +44,19 @@ void loop() {
   if (WiFi.status() != WL_CONNECTED) { wifiInterface.setWiFiReconnectingState(); }
   if (!clientConnected) { reconnectMQTTClient(); }
   delay(10);
+}
+
+void setupMQTT(bool firstBoot) {
+  int connStart = millis();
+  bool mqttConnected  = sensorMQTT.initializeMQTT(messageReceived);     
+  bool mqttSubscribed = sensorMQTT.subscribeToTopics();
+  if (!(mqttConnected && mqttSubscribed)) {
+    mqttFailureLoop();
+  }
+
+  // Setup successful: post boot message
+  int connDur = (millis() - connStart) / 1000; // Int div - trunc to whole num is fine
+  sensorMQTT.publishBootEvent(firstBoot, connDur); 
 }
 
 void mqttFailureLoop() {

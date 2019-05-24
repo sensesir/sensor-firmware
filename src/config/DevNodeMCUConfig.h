@@ -38,10 +38,18 @@ const int8_t TIME_ZONE = 1;            // -6: Colorado | Cali: -7 | Ireland +1
 // #define USE_SUMMER_TIME_DST
 
 // Networking
+const char SERVER_UID[] = "eu-west-1.dev";
 const char AWS_IOT_DEVICE_GATEWAY[] = "anwaqu8y2zf77-ats.iot.eu-west-1.amazonaws.com";
 const char MQTT_CONN_ERR_ENDPOINT[] = "https://eu4nnl75bb.execute-api.eu-west-1.amazonaws.com/dev/command";
 const char API_KEY[] = "8sBkjUhVQ9lZP3uigrpB3e2C66dmtaSaJwC3Mmy7";
-const char SERVER_UID[] = "eu-west-1.dev";
+
+// Conditional WiFi setting
+#define USE_DEV_MODEL_DATA
+
+#ifdef USE_DEV_MODEL_DATA
 const char SENSOR_UID[] = "SensorJPDev";
+const char WIFI_SSID[] = "BRIGNETI";
+const char WIFI_PASSWORD[] = "12345678";
+#endif
 
 #endif
