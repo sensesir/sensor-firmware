@@ -33,6 +33,10 @@
 
 const char FIRMWARE_VERSION[] = "0.2.0";
 
+// Networking
+const char KEY_SSID[] = "wifiSSID";
+const char KEY_WIFI_PASSWORD[] = "wifiPassword";
+
 // MQTT Topic Pubsub
 // General topic use
 const char SERVER[]  = "server";

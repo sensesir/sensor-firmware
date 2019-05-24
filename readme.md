@@ -71,6 +71,8 @@ Development will be carried out on different boards and in different contexts, h
 
 The high level requirement is such that on first run, a sensor will not have WiFi creds stored and will need to acquire them from the SenseSir mobile app. After cred acquisition, it will attempt to connect to the specified network. 
 
+The specific function is illustrated by the flow diagram below: [Todo: add diagram]
+
 #### Reconnection event
 
 Important to note that the Arduino ESP8266 WiFi library automatically attempts to reconnect on network dropouts. The only action taken by the firmware is to display the reconnecting state (flashing LEDs in req colour).
@@ -145,6 +147,10 @@ That said, the pattern can easily be misused, hence before modifying any code re
 The `GDoorIO` class is responsible for sensing door state. This updated on each loop iteration. In the method `updateDoorState()`, it samples the Reed switch position 10x in 0.5s, this is to assert with a high degree of confidence that the Reed switch's signal is consistence and true. This is inline with fail safe procedure - open is a 'less safe' state than closed. 
 
 The simplicity of the application doesn't necessitate any true DSP at this stage. 
+
+### Data persistance
+
+The ESP has two options for persistence: EEPROM (virtual) and SPIFFS. For the sake of simplicity, EEPROM will be used for the device's UID, SSID and Wifi password. If the requisite model data structures become increasingly complex, the persistence system will be refactored to use SPIFFS and JSON-structured .txt files. 
 
 ### Error handling
 
