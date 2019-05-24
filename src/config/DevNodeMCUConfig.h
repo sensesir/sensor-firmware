@@ -47,7 +47,6 @@ const char API_KEY[] = "8sBkjUhVQ9lZP3uigrpB3e2C66dmtaSaJwC3Mmy7";
 // #define USE_DEV_MODEL_DATA
 
 #ifdef USE_DEV_MODEL_DATA
-const char SENSOR_UID[] = "SensorJPDev";
 const char WIFI_SSID[] = "BRIGNETI";
 const char WIFI_PASSWORD[] = "12345678";
 #endif

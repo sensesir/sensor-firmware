@@ -22,15 +22,10 @@ SensorModel::SensorModel() {
     #ifndef USE_DEV_MODEL_DATA
     this->initializeModel();
     #else 
-    strcpy(this->sensorUID, SENSOR_UID);
     strcpy(this->wifiSSID, WIFI_SSID);
     strcpy(this->wifiPassword, WIFI_PASSWORD);
     this->sensorDataLoaded = true;
     #endif
-}
-
-void SensorModel::setModelUID(std::string newSensorUID) {
-    strcpy(this->sensorUID, newSensorUID.c_str());
 }
 
 void SensorModel::setModelSSID(std::string ssid) {
@@ -55,11 +50,8 @@ void SensorModel::initializeModel() {
     // Sort KV pairs according to expectation
     for (std::vector<std::string> dataPair : modelData) {
         std::string key = dataPair[0];
-        if (key == KEY_SENSOR_UID) {
-            strcpy(this->sensorUID, dataPair[1].c_str());
-        } 
-
-        else if (key == KEY_SSID) {
+        
+        if (key == KEY_SSID) {
             strcpy(this->wifiSSID, dataPair[1].c_str());
         } 
         
@@ -175,7 +167,6 @@ void SensorModel::writeModelDataToDisk() {
     EEPROM.write(2, LF);
 
     uint16_t memAddress = 3;
-    this->writeKVPair(&memAddress, KEY_SENSOR_UID, this->sensorUID);
     this->writeKVPair(&memAddress, KEY_SSID, this->wifiSSID);
     this->writeKVPair(&memAddress, KEY_WIFI_PASSWORD, this->wifiPassword);
 

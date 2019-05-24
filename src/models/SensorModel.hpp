@@ -28,11 +28,9 @@ class SensorModel {
         static SensorModel& getInstance();
 
         bool sensorDataLoaded = false;
-        char sensorUID[SENSOR_UID_LENGTH + 1];  // +1 for null terminator
         char wifiSSID[50];          // Arbitrary, but surely no one has an SSID/password longer than this?
         char wifiPassword[50];   
 
-        void setModelUID(std::string newSensorUID);
         void setModelSSID(std::string ssid);
         void setModelPassword(std::string password); 
 

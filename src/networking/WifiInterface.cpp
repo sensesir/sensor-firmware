@@ -16,7 +16,7 @@ bool SensorWifi::connectToWifi() {
 }
 
 bool SensorWifi::connectToWifi(const char* ssid, const char* password){
-	WiFi.hostname(SensorModel::getInstance().sensorUID);
+	// WiFi.hostname();
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(ssid, password);
 

@@ -45,7 +45,7 @@ bool SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
 bool SensorMQTT::connectDeviceGateway() {
     Serial.print("MQTT: Attempting to connect to AWS IoT Cloud -> ");
     Serial.println(AWS_IOT_DEVICE_GATEWAY);    
-    bool success = this->connect(SensorModel::getInstance().sensorUID);
+    bool success = this->connect(SENSOR_UID);
 
     if (success) {
       Serial.println("MQTT: Successfully connected to AWS IoT Cloud");
@@ -92,7 +92,7 @@ bool SensorMQTT::subscribeToTopics() {
 
   for (int i=0; i < SUBSCRIBE_TOPICS.size(); i++) {
     char topic[256];
-    this->generateTopic(topic, SENSOR, SensorModel::getInstance().sensorUID, COMMAND, SUBSCRIBE_TOPICS[i]);
+    this->generateTopic(topic, SENSOR, SENSOR_UID, COMMAND, SUBSCRIBE_TOPICS[i]);
     bool subscribed = this->subscribe(topic);
 
     if (subscribed) {
@@ -119,7 +119,7 @@ void SensorMQTT::publishBootEvent(bool firstBoot, int connDur) {
   // Create payload using JSON lib
   const int capacity = JSON_OBJECT_SIZE(4) + 120;     // 4 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
-  payload[KEY_SENSOR_UID] = SensorModel::getInstance().sensorUID;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_FIRMWARE_VERSION] = FIRMWARE_VERSION; 
   payload[KEY_DURATION] = connDur;
   if (firstBoot) {
@@ -157,7 +157,7 @@ void SensorMQTT::publishDoorState() {
   // Create payload
   const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
-  payload[KEY_SENSOR_UID] = SensorModel::getInstance().sensorUID;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_DOOR_STATE;
   payload[KEY_STATE] = GDoorIO::getInstance().gdoor.stateString;    // normal char
 
@@ -187,7 +187,7 @@ void SensorMQTT::publishReconnection(int reconnDur) {
   // Create payload
   const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 2 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
-  payload[KEY_SENSOR_UID] = SensorModel::getInstance().sensorUID;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_RECONNECT;
   payload[KEY_DURATION] = reconnDur;
 
@@ -217,7 +217,7 @@ void SensorMQTT::publishHealth() {
   // Create payload
   const int capacity = JSON_OBJECT_SIZE(2) + 120;     // 2 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
-  payload[KEY_SENSOR_UID] = SensorModel::getInstance().sensorUID;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_HEALTH;
 
   // Serialize JSON into char
@@ -246,7 +246,7 @@ void SensorMQTT::publishError(const char* message) {
   // Create payload
   const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
-  payload[KEY_SENSOR_UID] = SensorModel::getInstance().sensorUID;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_ERROR;
   payload[KEY_MESSAGE] = message;
 
@@ -279,7 +279,7 @@ void SensorMQTT::publishUnknownTypeError(std::string unknownType, std::string id
   // Create payload
   const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
-  payload[KEY_SENSOR_UID] = SensorModel::getInstance().sensorUID;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_ERROR;
   payload[KEY_MESSAGE] = errorMessage.c_str();
 
@@ -325,7 +325,7 @@ void SensorMQTT::publishUnknownTypeError(std::string unknownType, std::string id
 bool SensorMQTT::verifyTargetUID(char *payload, std::string *sensorUID) {
   this->deserializeStdPayload(payload, sensorUID);
 
-  if (*sensorUID == std::string(SensorModel::getInstance().sensorUID)){ return true; }
+  if (*sensorUID == std::string(SENSOR_UID)){ return true; }
   else { return false; }
 }
 
