@@ -19,9 +19,10 @@ bool SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
     BearSSL::X509List cert(caCert);
     BearSSL::X509List client_crt(clientCert);
     BearSSL::PrivateKey key(privateKey);
-    wifiClient.setTrustAnchors(&cert);
-    wifiClient.setClientRSACert(&client_crt, &key);
-    setClient(wifiClient);
+    this->wifiClient = new WiFiClientSecure();
+    this->wifiClient->setTrustAnchors(&cert);
+    this->wifiClient->setClientRSACert(&client_crt, &key);
+    setClient(*wifiClient);
 
     // Set indicator LED (solid colour because of blocking functions in external lib)
     GDoorIO::getInstance().networkLEDSetCyan();
@@ -42,9 +43,7 @@ bool SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
     }
 }
 
-bool SensorMQTT::connectDeviceGateway() {
-    Serial.print("MQTT: Attempting to connect to AWS IoT Cloud -> ");
-    Serial.println(AWS_IOT_DEVICE_GATEWAY);    
+bool SensorMQTT::connectDeviceGateway() {  
     bool success = this->connect(SENSOR_UID);
 
     if (success) {
@@ -66,9 +65,9 @@ bool SensorMQTT::reconnectClientSync() {
   BearSSL::X509List cert(caCert);
   BearSSL::X509List client_crt(clientCert);
   BearSSL::PrivateKey key(privateKey);
-  wifiClient.setTrustAnchors(&cert);
-  wifiClient.setClientRSACert(&client_crt, &key);
-  setClient(wifiClient);
+  this->wifiClient->setTrustAnchors(&cert);
+  this->wifiClient->setClientRSACert(&client_crt, &key);
+  setClient(*wifiClient); // Should be able to remove
 
   // Not explicitly required - but to be sure after wifi dropout
   this->ntpConnect();

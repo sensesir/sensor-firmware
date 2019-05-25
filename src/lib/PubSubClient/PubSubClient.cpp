@@ -122,7 +122,9 @@ boolean PubSubClient::connect(const char *id, const char *user, const char *pass
         int result = 0;
 
         if (domain != NULL) {
-            result = _client->connect(this->domain, this->port);  // Experiment with adding timeout here
+            Serial.print("PUBSUB: Attempting socket connection to ");
+            Serial.println(this->domain);
+            result = _client->connect(this->domain, this->port);
         } else {
             result = _client->connect(this->ip, this->port);
         }
