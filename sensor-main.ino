@@ -32,7 +32,6 @@ void setup() {
   }
   
   wifiInterface.connectToWifi();
-  delay(2000); // Cool down
   setupMQTT(false);
 }
 
