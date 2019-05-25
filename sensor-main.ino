@@ -32,14 +32,17 @@ void setup() {
   }
   
   wifiInterface.connectToWifi();
+  delay(2000); // Cool down
   setupMQTT(false);
 }
 
 void loop() {
   bool clientConnected = sensorMQTT.loop();
 
-  // Door state update
-  bool newDoorState = GDoorIO::getInstance().doorStateChanged();
+  // IO Update
+  GDoorIO *doorIO = &GDoorIO::getInstance();
+  doorIO->assessModePin();
+  bool newDoorState = doorIO->doorStateChanged();
   if(newDoorState) { sensorMQTT.publishDoorState(); }
 
   // Reconnection checks

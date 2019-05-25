@@ -28,6 +28,7 @@ void GDoorIO::initializeGPIOPins() {
     this->networkLEDOff();
 
     pinMode(doorSensorPin, INPUT);
+    pinMode(networkModePin, INPUT);
     pinMode(relayDriverPin, OUTPUT);
     digitalWrite(relayDriverPin, LOW);
     
@@ -80,6 +81,40 @@ void GDoorIO::actuateDoor() {
     digitalWrite(relayDriverPin, HIGH);
     delay(ACTUATION_PULSE_LENGTH);
     digitalWrite(relayDriverPin, LOW);
+}
+
+// See readme for motivation as to why an interrupt is not used
+void GDoorIO::assessModePin() {
+    bool modePinState = digitalRead(this->networkModePin);
+    if (modePinState == LOW) {
+        return;
+    }
+    
+    int count = 0;
+    int maxLoop = ((MODE_RESET_HOLD + 1)*1000)/SENSOR_FILTER_DELAY;
+    for (int i = 0; i < maxLoop; i++) {    
+        if (digitalRead(this->networkModePin) == LOW) {
+            break;
+        }
+
+        count ++;
+        delay(SENSOR_FILTER_DELAY);
+    }
+
+    if (count > ((MODE_RESET_HOLD * 1000)/SENSOR_FILTER_DELAY)) {
+        // Factory reset - [More functionality in future]
+        Serial.println("GDOORIO: Mode held for > 30s. Factory reset.");
+        SensorModel::getInstance().clearEEPROM();
+        ESP.restart();
+        return;
+    }
+
+    if (count > ((MODE_AP_POINT_HOLD * 1000)/SENSOR_FILTER_DELAY)) {
+        Serial.println("GDOORIO: Mode held for ~5s. Restarting.");
+        SensorModel::getInstance().clearEEPROM();
+        ESP.restart();
+        return;
+    }
 }
 
 // LED management
