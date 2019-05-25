@@ -46,7 +46,7 @@ class SensorMQTT: public PubSubClient{
         void deserializeStdPayload(char* payload, std::string *sensorUID); 
 
     private:
-        WiFiClientSecure wifiClient; // Needs to be persisted
+        WiFiClientSecure *wifiClient; // Needs to be persisted
         // void publishMessage(char* topic, const JsonObject& payload); [Re-implement when possible]
         void generateTopic(char* topic,const char* target, const char* targetUID, const char* msgCategory, const char* descriptor);
         void pubSubError(int8_t MQTTErr);
