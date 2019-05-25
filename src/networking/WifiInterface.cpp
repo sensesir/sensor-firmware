@@ -26,8 +26,9 @@ bool SensorWifi::connectToWifi(const char* ssid, const char* password){
 	GDoorIO *doorIO = &GDoorIO::getInstance();
 	doorIO->networkLEDOff();
 	while (WiFi.status() != WL_CONNECTED){
-		delay(LED_FLASH_DELAY);
+		delay(LED_FLASH_DELAY);					// TODO: make non-blocking
 		doorIO->networkLEDToggleWhite();
+		doorIO->assessModePin();
 		Serial.print(".");
 	}
 
