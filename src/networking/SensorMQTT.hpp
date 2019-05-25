@@ -16,6 +16,7 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
+#include <Ticker.h>
 #include <time.h>
 #include <string>
 #include "../lib/PubSubClient/PubSubClient.h"
@@ -51,6 +52,8 @@ class SensorMQTT: public PubSubClient{
         void generateTopic(char* topic,const char* target, const char* targetUID, const char* msgCategory, const char* descriptor);
         void pubSubError(int8_t MQTTErr);
         void ntpConnect();
+
+        Ticker memChecker;
 };
 
 #endif

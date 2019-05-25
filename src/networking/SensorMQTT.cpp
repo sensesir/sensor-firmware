@@ -8,6 +8,9 @@
 
 #include "SensorMQTT.hpp"
 
+// Function prototypes
+void checkHeap();
+
 SensorMQTT::SensorMQTT() {
   // Just to init super class
 }
@@ -44,7 +47,12 @@ bool SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
 }
 
 bool SensorMQTT::connectDeviceGateway() {  
+    // For debugging
+    this->memChecker.attach(5, checkHeap);
+    checkHeap();
+    
     bool success = this->connect(SENSOR_UID);
+    this->memChecker.detach();
 
     if (success) {
       Serial.println("MQTT: Successfully connected to AWS IoT Cloud");
@@ -54,7 +62,6 @@ bool SensorMQTT::connectDeviceGateway() {
       Serial.println("MQTT: Failed to connect to AWS IoT Cloud");
       this->pubSubError(this->state());
       return false;
-      // Todo: Write error to flash memory
     }
 }
 
@@ -423,6 +430,12 @@ void SensorMQTT::pubSubError(int8_t MQTTErr) {
   Serial.print("SSL Error Code: ");
   Serial.println(wifiClient.getLastSSLError());
 }
+
+void checkHeap() {
+  Serial.print("MQTT: Free heap => ");
+  Serial.println(ESP.getFreeHeap());
+}
+
 
 
 

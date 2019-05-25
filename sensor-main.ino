@@ -32,6 +32,7 @@ void setup() {
   }
   
   wifiInterface.connectToWifi();
+  // Wait for heap to be clear?
   setupMQTT(false);
 }
 
