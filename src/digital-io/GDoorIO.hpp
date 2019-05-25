@@ -51,6 +51,7 @@ class GDoorIO {
 
         // LED states
         void networkLEDOff();
+        void networkLEDSetYellow();
         void networkLEDSetWhite();
         void networkLEDToggleWhite();
         void networkLEDFSetPurple();

@@ -90,6 +90,13 @@ void GDoorIO::networkLEDOff() {
     digitalWrite(networkLEDBlue, LOW);    
 }
 
+void GDoorIO::networkLEDSetYellow() {
+    this->networkLEDOff();
+    digitalWrite(networkLEDRed, HIGH);
+    digitalWrite(networkLEDGreen, HIGH);
+    digitalWrite(networkLEDBlue, LOW);
+} 
+
 void GDoorIO::networkLEDSetWhite() {
     this->networkLEDOff();
     digitalWrite(networkLEDRed, HIGH);
