@@ -36,6 +36,7 @@ class SensorModel {
 
         void writeModelDataToDisk();
         void clearEEPROM();
+        bool wifiCredsAcquired();
 
     private: 
         // Singleton handling

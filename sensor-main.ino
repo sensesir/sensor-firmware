@@ -10,6 +10,7 @@
 #include "./src/networking/WifiInterface.hpp"
 #include "./src/digital-io/GDoorIO.hpp"
 #include "./src/networking/SensorMQTT.hpp"
+#include "./src/networking/GDoorServer.hpp"
 #include "./src/models/SensorModel.hpp"
 #include "./src/utilities/Utilities.h"
 
@@ -27,8 +28,7 @@ void setup() {
   bool sensorInitialised = SensorModel::getInstance().sensorDataLoaded;
 
   if (!sensorInitialised) {
-    Serial.println("MAIN: Sensor not initialized");
-    // TODO: Enter AP mode
+    initialiseSensorLocally();
   }
   
   wifiInterface.connectToWifi();

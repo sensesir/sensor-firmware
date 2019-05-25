@@ -36,6 +36,11 @@ const char FIRMWARE_VERSION[] = "0.2.0";
 // Networking
 const char KEY_SSID[] = "wifiSSID";
 const char KEY_WIFI_PASSWORD[] = "wifiPassword";
+const char ACCESS_POINT_NAME[] = "GarageDoor-jPtF";
+const char GET_SENSOR_UID_ENDPOINT[] = "getSensorUID";
+const char POST_WIFI_CREDS_ENDPOINT[] = "postWifiCreds";
+const char POST_SENSOR_UID_CONFIRM[] = "postSensorUIDConfirm";
+const char DNS_ADDRESS[] = "gdoorsensor";
 
 // MQTT Topic Pubsub
 // General topic use

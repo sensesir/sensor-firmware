@@ -216,3 +216,12 @@ void SensorModel::clearEEPROM() {
     EEPROM.end();
     Serial.println("MODEL: Cleared EEPROM flash mem");
 }
+
+bool SensorModel::wifiCredsAcquired() {
+    if (strlen(this->wifiSSID) && strlen(this->wifiPassword)) {
+        Serial.println("MODEL: WiFi creds acquired");
+        return true;
+    }
+
+    return false;
+}
