@@ -13,12 +13,14 @@
 
 #include <ESP8266WiFi.h>
 #include <Arduino.h>
+#include "../models/SensorModel.hpp"
 #include "../digital-io/GDoorIO.hpp"
 #include "../config/Configuration.h"
 
 // Static IP 
 class SensorWifi{
 	public:
+		bool connectToWifi();
 		bool connectToWifi(const char* ssid, const char* password);
 		bool setWiFiReconnectingState();
 		bool connected = false;

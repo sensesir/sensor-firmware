@@ -185,7 +185,7 @@ void SensorMQTT::publishReconnection(int reconnDur) {
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_RECONNECT);
 
   // Create payload
-  const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 2 KV pairs + 120 bytes spare for const input duplication
+  const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
   payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_RECONNECT;
@@ -420,7 +420,7 @@ void SensorMQTT::pubSubError(int8_t MQTTErr) {
     Serial.println("MQTT: No error code");
 
   // SSL Error
-  WiFiClientSecure wifiClient;
+  WiFiClientSecure wifiClient;  // Todo: use member pointer
   Serial.print("SSL Error Code: ");
   Serial.println(wifiClient.getLastSSLError());
 }

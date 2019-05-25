@@ -36,3 +36,4 @@ const int8_t TIME_ZONE = +2;            // UTC+2 => JHB
 // Networking
 // const char AWS_IOT_DEVICE_GATEWAY[] = "";
 // const char SERVER_UID[] = "";
+const int serverPort = 80;
