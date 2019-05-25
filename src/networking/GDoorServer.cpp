@@ -32,7 +32,10 @@ void confirmSensorUIDSent();
 void initialiseSensorLocally() {
 	Serial.println("SERVER: Creating access point");
 	GDoorIO::getInstance().networkLEDSetYellow();
-	WiFi.softAP(ACCESS_POINT_NAME);		// No password
+	IPAddress apIP(10, 10, 10, 1);                      // Todo: research if this will cause any collisions
+    IPAddress subnet(255,255,255,0);                    // Todo: refresher in subnet mask function
+    WiFi.softAPConfig(apIP, apIP, subnet);
+    WiFi.softAP(ACCESS_POINT_NAME);		// No password
     setupDNS();
 
 	// Set up server
@@ -49,6 +52,7 @@ void initialiseSensorLocally() {
         MDNS.update();  // If the local IP is changed
     } while (!credentialsAcquired());
 
+    delay(2500);    // Complete last http response
     server->stop();
     MDNS.end();
     Serial.println("SERVER: Completed credential acquisition");
