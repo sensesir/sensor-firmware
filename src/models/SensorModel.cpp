@@ -28,12 +28,12 @@ SensorModel::SensorModel() {
     #endif
 }
 
-void SensorModel::setModelSSID(std::string ssid) {
-    strcpy(this->wifiSSID, ssid.c_str());
+void SensorModel::setModelSSID(const char* ssid) {
+    strcpy(this->wifiSSID, ssid);
 }
 
-void SensorModel::setModelPassword(std::string password) {
-    strcpy(this->wifiPassword, password.c_str());
+void SensorModel::setModelPassword(const char* password) {
+    strcpy(this->wifiPassword, password);
 }
 
 void SensorModel::initializeModel() {
@@ -218,10 +218,6 @@ void SensorModel::clearEEPROM() {
 }
 
 bool SensorModel::wifiCredsAcquired() {
-    if (strlen(this->wifiSSID) && strlen(this->wifiPassword)) {
-        Serial.println("MODEL: WiFi creds acquired");
-        return true;
-    }
-
+    if (strlen(this->wifiSSID) && strlen(this->wifiPassword)) { return true; }
     return false;
 }

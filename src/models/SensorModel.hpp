@@ -31,9 +31,8 @@ class SensorModel {
         char wifiSSID[50];          // Arbitrary, but surely no one has an SSID/password longer than this?
         char wifiPassword[50];   
 
-        void setModelSSID(std::string ssid);
-        void setModelPassword(std::string password); 
-
+        void setModelSSID(const char* ssid);
+        void setModelPassword(const char* password); 
         void writeModelDataToDisk();
         void clearEEPROM();
         bool wifiCredsAcquired();

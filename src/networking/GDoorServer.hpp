@@ -15,6 +15,8 @@
 #include "ESP8266WebServer.h"
 #include <ESP8266mDNS.h>
 #include <hardwareSerial.h>
+#include "../../secrets/AWSIoTSecrets.h"
+#include "../lib/ArduinoJSON/ArduinoJson.h"
 #include "../config/Configuration.h"
 #include "../digital-io/GDoorIO.hpp"
 #include "../models/SensorModel.hpp"

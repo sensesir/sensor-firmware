@@ -49,7 +49,8 @@ void initialiseSensorLocally() {
         MDNS.update();  // If the local IP is changed
     } while (!credentialsAcquired());
 
-    SensorModel::getInstance().writeModelDataToDisk();
+    server->stop();
+    MDNS.end();
     Serial.println("SERVER: Completed credential acquisition");
 }
 
@@ -83,13 +84,57 @@ void handleRoot() {
 }
 
 void getSensorUIDEndpoint() {
+    Serial.println("SERVER: Sending sensor UID to client");
 
+    // Create payload
+    const int capacity = JSON_OBJECT_SIZE(1) + 120;     // 1 KV pair + 120 bytes spare for const input duplication
+    StaticJsonDocument<capacity> payload;
+    payload[KEY_SENSOR_UID] = SENSOR_UID;
+
+    // Serialize JSON into char
+    int jsonLength = measureJson(payload);
+    char serializedPayload[256];
+    serializeJson(payload, serializedPayload);
+
+    server->send(200, "application/json", serializedPayload);
+    sentSensorUID = true;
 }
 
 void postWiFiCredsEndpoint() {
+    if (server->hasArg("plain") == false) {
+        Serial.println("SERVER: Error - did not receive WiFi creds");
+        server->send(400,"text/plain", "No credentials received");
+        return;
+    }
 
+    Serial.println("SERVER: Received wifi creds, deserializing");
+    const size_t capacity = JSON_OBJECT_SIZE(2) + 120; // Only 1 KV pair for now + buffer (100 = ~2x safety) for duplication of const
+    StaticJsonDocument<capacity> doc;
+    DeserializationError error = deserializeJson(doc, server->arg("plain"));
+
+    // Unpack - being wary of null pointers
+    const char* rawSSID = doc[KEY_SSID];
+    if (!rawSSID) { 
+        server->send(400, "text/plain", "No SSID received");
+        return;
+    }
+
+    const char* rawPassword = doc[KEY_WIFI_PASSWORD];
+    if (!rawPassword) { 
+        server->send(400, "text/plain", "No password received");
+        return;
+    }
+
+    Serial.println("SERVER: Received SSID & password, setting model");
+    SensorModel *sensorModel = &SensorModel::getInstance();
+    sensorModel->setModelSSID(rawSSID);
+    sensorModel->setModelPassword(rawPassword);
+    sensorModel->writeModelDataToDisk();
+    server->send(200, "text/plain", "successfully set SSID & password");
 }
 
 void confirmSensorUIDSent() {
-
+    Serial.println("SERVER: Received confirmation of sensorUID upload");
+    server->send(200,"text/plain", "OK");
+    sensorUIDSendSuccess = true;
 }
