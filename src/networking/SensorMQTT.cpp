@@ -8,6 +8,8 @@
 
 #include "SensorMQTT.hpp"
 
+void resetSensor();
+
 SensorMQTT::SensorMQTT() {
   // Just to init super class
 }
@@ -44,7 +46,9 @@ bool SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
 }
 
 bool SensorMQTT::connectDeviceGateway() {  
+    this->connTimer.once(MQTT_CONN_TIMEOUT, resetSensor);
     bool success = this->connect(SENSOR_UID);
+    this->connTimer.detach();
 
     if (success) {
       Serial.println("MQTT: Successfully connected to AWS IoT Cloud");
@@ -54,7 +58,6 @@ bool SensorMQTT::connectDeviceGateway() {
       Serial.println("MQTT: Failed to connect to AWS IoT Cloud");
       this->pubSubError(this->state());
       return false;
-      // Todo: Write error to flash memory
     }
 }
 
@@ -424,6 +427,10 @@ void SensorMQTT::pubSubError(int8_t MQTTErr) {
   Serial.println(wifiClient.getLastSSLError());
 }
 
+void resetSensor() {
+  Serial.println("MQTT: Conn timed out.");
+  ESP.restart();
+}
 
 
 
