@@ -41,7 +41,9 @@ bool SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
     if(this->connectDeviceGateway()) {
       return true;
     } else {
-      return this->reconnectClientSync();
+      return false;
+      // delay(RECONNECT_DELAY_MQTT);
+      // return this->reconnectClientSync();
     }
 }
 
@@ -62,16 +64,16 @@ bool SensorMQTT::connectDeviceGateway() {
 }
 
 bool SensorMQTT::reconnectClientSync() {
+  Serial.println("MQTT: Attempting to reconnect client");
   GDoorIO::getInstance().networkLEDSetCyan();
 
-  // Set SSL certs
   BearSSL::X509List cert(caCert);
   BearSSL::X509List client_crt(clientCert);
   BearSSL::PrivateKey key(privateKey);
   this->wifiClient->setTrustAnchors(&cert);
   this->wifiClient->setClientRSACert(&client_crt, &key);
   setClient(*wifiClient); // Should be able to remove
-
+  
   // Not explicitly required - but to be sure after wifi dropout
   this->ntpConnect();
   

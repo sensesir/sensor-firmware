@@ -53,6 +53,12 @@ void loop() {
 void setupMQTT(bool firstBoot) {
   int connStart = millis();
   bool mqttConnected  = sensorMQTT.initializeMQTT(messageReceived);     
+
+  if (!mqttConnected) {
+    // Immediately retry conn 5x
+    mqttConnected = sensorMQTT.reconnectClientSync(); 
+  }
+  
   bool mqttSubscribed = sensorMQTT.subscribeToTopics();
   if (!(mqttConnected && mqttSubscribed)) {
     mqttFailureLoop();
