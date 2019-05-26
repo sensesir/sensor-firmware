@@ -28,7 +28,7 @@ This project uses AWS IoT Core as an MQTT message broker, IoT fleet management c
           * Thing certificate: *.pem.crt file
           * Public key:        *.pem.key file
           * Private key:       *.pem.key file
-      * A standard AWS Root CA is also required, this can be reused from the secrets dir (need to affirm this though)
+      * A standard AWS Root CA is also required, this can be reused from the `docs/templates/cacert.txt` file
       * Copy the template file [AWSIoTSecrets.h](docs/templates/AWSIoTSecrets.h) from `docs/templates/AWSIoTSecrets.h` to `secrets/AWSIoTSecrets.h`. Do not remove the template file from it's place.
       * Follow the instructions in the file, filling in the necessary hashs in the areas provided with the downloaded certs + keys.
       * Ensure your certificate and key files **ARE NOT** committed to the repo on any branch

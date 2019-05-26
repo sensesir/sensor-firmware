@@ -14,6 +14,8 @@
 
 #include "../src/config/Configuration.h"
 
+static const char SENSOR_UID[] =
+
 // Obtain First CA certificate for Amazon AWS - Root CA
 static const char caCert[] = R"EOF(
 -----BEGIN CERTIFICATE-----
