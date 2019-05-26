@@ -354,15 +354,10 @@ void SensorMQTT::deserializeStdPayload(char* payload, std::string *sensorUID) {
 }
 
 void SensorMQTT::generateTopic(char* topic,const char* target, const char* targetUID, const char* msgCategory, const char* descriptor) {
-  strcpy(topic, target);
-  strcat(topic, "/");         // Not computationally optimal, but traded for constants coherence
-  strcat(topic, targetUID);
-  strcat(topic, "/");
-  strcat(topic, FIRMWARE_VERSION); // Static for all topics
-  strcat(topic, "/");
-  strcat(topic, msgCategory);
-  strcat(topic, "/");
-  strcat(topic, descriptor);
+  std::string firmwareMajorVersion("v");
+  firmwareMajorVersion += FIRMWARE_VERSION[0];
+  std::string topicStr = std::string(target) + "/" + std::string(targetUID) + "/" + firmwareMajorVersion + "/" + std::string(msgCategory) + "/" + std::string(descriptor);
+  strcpy(topic, topicStr.c_str());
 }
 
 /*
