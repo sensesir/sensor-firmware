@@ -156,6 +156,12 @@ The `GDoorIO` class is responsible for sensing door state. This updated on each 
 
 The simplicity of the application doesn't necessitate any true DSP at this stage. 
 
+#### Polling vs Interupts
+
+There are two cases wherein the firmware employs a polling system to assess the state of GPIO inputs. A similar end could be achieved by registering interrupts with ISRs. The primary motive to opt against this design paradigm is the networking requirements of the firmware (socket connection) - it is functional to control when the pins are check, as they are blocking functions, and during the checks the socket connection maintenance cannot be serviced. 
+
+Another sensative moment is during socket connection, and interruption is undesirable during this event. 
+
 ### Data persistance
 
 The ESP has two options for persistence: EEPROM (virtual) and SPIFFS. For the sake of simplicity, EEPROM will be used for the device's UID, SSID and Wifi password. If the requisite model data structures become increasingly complex, the persistence system will be refactored to use SPIFFS and JSON-structured .txt files. 

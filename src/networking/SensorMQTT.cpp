@@ -8,6 +8,8 @@
 
 #include "SensorMQTT.hpp"
 
+void resetSensor();
+
 SensorMQTT::SensorMQTT() {
   // Just to init super class
 }
@@ -44,7 +46,9 @@ bool SensorMQTT::initializeMQTT(mqttMsgRecCallback callback) {
 }
 
 bool SensorMQTT::connectDeviceGateway() {  
+    this->connTimer.once(MQTT_CONN_TIMEOUT, resetSensor);
     bool success = this->connect(SENSOR_UID);
+    this->connTimer.detach();
 
     if (success) {
       Serial.println("MQTT: Successfully connected to AWS IoT Cloud");
@@ -54,7 +58,6 @@ bool SensorMQTT::connectDeviceGateway() {
       Serial.println("MQTT: Failed to connect to AWS IoT Cloud");
       this->pubSubError(this->state());
       return false;
-      // Todo: Write error to flash memory
     }
 }
 
@@ -351,15 +354,10 @@ void SensorMQTT::deserializeStdPayload(char* payload, std::string *sensorUID) {
 }
 
 void SensorMQTT::generateTopic(char* topic,const char* target, const char* targetUID, const char* msgCategory, const char* descriptor) {
-  strcpy(topic, target);
-  strcat(topic, "/");         // Not computationally optimal, but traded for constants coherence
-  strcat(topic, targetUID);
-  strcat(topic, "/");
-  strcat(topic, FIRMWARE_VERSION); // Static for all topics
-  strcat(topic, "/");
-  strcat(topic, msgCategory);
-  strcat(topic, "/");
-  strcat(topic, descriptor);
+  std::string firmwareMajorVersion("v");
+  firmwareMajorVersion += FIRMWARE_VERSION[0];
+  std::string topicStr = std::string(target) + "/" + std::string(targetUID) + "/" + firmwareMajorVersion + "/" + std::string(msgCategory) + "/" + std::string(descriptor);
+  strcpy(topic, topicStr.c_str());
 }
 
 /*
@@ -424,6 +422,10 @@ void SensorMQTT::pubSubError(int8_t MQTTErr) {
   Serial.println(wifiClient.getLastSSLError());
 }
 
+void resetSensor() {
+  Serial.println("MQTT: Conn timed out.");
+  ESP.restart();
+}
 
 
 

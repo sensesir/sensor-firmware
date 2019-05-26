@@ -82,6 +82,8 @@ const char DOOR_STATE_UNKNOWN_STR[] = "unknown";
 #define SENSOR_FILTER_DELAY 50      // ms  [check average noise frequency and compare]
 #define RECONNECT_DELAY_MQTT 2500
 #define SETUP_COOL_DOWN 2000
+#define MODE_AP_POINT_HOLD 5     // s
+#define MODE_RESET_HOLD 30       // s
 
 // Number constants
 #define MQTT_RECON_MAX 20

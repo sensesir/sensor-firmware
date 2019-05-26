@@ -13,6 +13,7 @@
 #include <vector>
 #include <string>
 #include "../config/Configuration.h"
+#include "../models/SensorModel.hpp"
 
 // Door state
 typedef enum doorState {
@@ -35,6 +36,7 @@ class GDoorIO {
         const int networkLEDGreen = NETWORK_LED_GREEN;
         const int networkLEDBlue  = NETWORK_LED_BLUE;
         const int doorSensorPin   = DOOR_SENSOR;
+        const int networkModePin  = NETWORK_MODE; 
         const int relayDriverPin  = RELAY_OUT;	
 
         // State
@@ -48,6 +50,7 @@ class GDoorIO {
         void initialize();
         void actuateDoor();
         bool doorStateChanged();
+        void assessModePin();
 
         // LED states
         void networkLEDOff();
