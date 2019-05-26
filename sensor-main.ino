@@ -33,7 +33,7 @@ void setup() {
   }
   
   wifiInterface.connectToWifi();
-  setupMQTT(false);
+  setupMQTT(!sensorInitialised);
 }
 
 void loop() {
