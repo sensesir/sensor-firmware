@@ -240,16 +240,17 @@ void SensorMQTT::publishHealth() {
   }
 }
 
-void SensorMQTT::publishError(const char* message) {
+void SensorMQTT::publishError(const char* errorCode, const char* message) {
   // Create topic
   char topic[256];
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_ERROR);
 
   // Create payload
-  const int capacity = JSON_OBJECT_SIZE(3) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
+  const int capacity = JSON_OBJECT_SIZE(4) + 120;     // 3 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
   payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_ERROR;
+  payload[KEY_ERROR_CODE] = errorCode;
   payload[KEY_MESSAGE] = message;
 
   // Serialize JSON into char
@@ -340,7 +341,7 @@ void SensorMQTT::deserializeStdPayload(char* payload, std::string *sensorUID) {
       std::string errCode(error.c_str());
       std::string errorMessage = errPrefix + errCode;
       Serial.println(errorMessage.c_str());
-      this->publishError(errorMessage.c_str());
+      this->publishError(ERROR_SENSOR_JSON, errorMessage.c_str());
       return;
   }
 

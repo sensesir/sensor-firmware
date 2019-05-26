@@ -70,6 +70,7 @@ const char KEY_SENSOR_UID[]       = "sensorUID";
 const char KEY_EVENT[]            = "event";
 const char KEY_FIRMWARE_VERSION[] = "firmwareVersion";
 const char KEY_STATE[]            = "state";
+const char KEY_ERROR_CODE[]       = "errorCode";
 const char KEY_MESSAGE[]          = "message";
 const char KEY_DURATION[]         = "duration";
 
