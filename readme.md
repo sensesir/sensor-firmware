@@ -104,7 +104,7 @@ The firmware seems to be stable after the addition of a reconnection process. Wi
 
 #### Messaging Structure
 
-General topic structure: `targetType/targetUID/firmwareVersion/messageType/descriptor`
+General topic structure: `targetType/targetUID/majorFirmwareVersion/messageType/descriptor`
 
   1. Target types:
       1.1 server 
@@ -112,7 +112,7 @@ General topic structure: `targetType/targetUID/firmwareVersion/messageType/descr
   2. Target UIDs:
       2.1 Server: Dev = eu-west-1.dev
       2.2 Sensors: uuid-v4 generated, eg: b33eeb9c-dc19-4842-92cb-95a6189c30a1
-  3. Firmware version: 3-level semantic versioning, e.g. 1.3.0 (to ensure protocol compatiability)
+  3. Major firmware version: 3-level semantic versioning, include major version e.g. v0 or v1
   4. Message type: 
       4.1 event
       4.2 command
