@@ -63,6 +63,8 @@ Development will be carried out on different boards and in different contexts, h
      * On completion open a Pull Request for it to be merged into development.
   * Use lowercase and kebab-case
 
+  After completing a block of work on your feature/refactor/bug-fix branch, push it to Github, and then open a Pull Request, with Josh Perry as the reviewer. It will then be reviewed and merged into development. Do not merge locally. 
+
 ## Firmware functionality
 ---
 

@@ -43,7 +43,6 @@ const int serverPort = 80;
 #define USE_DEV_MODEL_DATA
 
 #ifdef USE_DEV_MODEL_DATA
-const char SENSOR_UID[] = "SensorTFDev";
 const char WIFI_SSID[] = "";
 const char WIFI_PASSWORD[] = "";
 #endif
