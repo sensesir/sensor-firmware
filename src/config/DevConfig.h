@@ -18,10 +18,12 @@
  *      a) 01: TX Serial
  *      b) 03: RX Serial
  */
-#define WIFI_LED 5
-#define DOOR_SENSOR 14
-#define RELAY_OUT 4
-#define HARD_RESET 12
+#define NETWORK_LED_RED 5
+#define NETWORK_LED_GREEN 4
+#define NETWORK_LED_BLUE 14
+#define DOOR_SENSOR 13
+#define RELAY_OUT 12
+#define NETWORK_MODE 15
 
 // Time constants
 #define ACTUATION_PULSE_LENGTH 1500     // miliseconds
