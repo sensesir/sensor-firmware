@@ -28,7 +28,7 @@ This project uses AWS IoT Core as an MQTT message broker, IoT fleet management c
           * Thing certificate: *.pem.crt file
           * Public key:        *.pem.key file
           * Private key:       *.pem.key file
-      * A standard AWS Root CA is also required, this can be reused from the secrets dir (need to affirm this though)
+      * A standard AWS Root CA is also required, this can be reused from the `docs/templates/cacert.txt` file
       * Copy the template file [AWSIoTSecrets.h](docs/templates/AWSIoTSecrets.h) from `docs/templates/AWSIoTSecrets.h` to `secrets/AWSIoTSecrets.h`. Do not remove the template file from it's place.
       * Follow the instructions in the file, filling in the necessary hashs in the areas provided with the downloaded certs + keys.
       * Ensure your certificate and key files **ARE NOT** committed to the repo on any branch
@@ -62,6 +62,8 @@ Development will be carried out on different boards and in different contexts, h
      * Refactors: branch onto refactor/descriptor, as above 
      * On completion open a Pull Request for it to be merged into development.
   * Use lowercase and kebab-case
+
+  After completing a block of work on your feature/refactor/bug-fix branch, push it to Github, and then open a Pull Request, with Josh Perry as the reviewer. It will then be reviewed and merged into development. Do not merge locally. 
 
 ## Firmware functionality
 ---
@@ -104,7 +106,7 @@ The firmware seems to be stable after the addition of a reconnection process. Wi
 
 #### Messaging Structure
 
-General topic structure: `targetType/targetUID/firmwareVersion/messageType/descriptor`
+General topic structure: `targetType/targetUID/majorFirmwareVersion/messageType/descriptor`
 
   1. Target types:
       1.1 server 
@@ -112,7 +114,7 @@ General topic structure: `targetType/targetUID/firmwareVersion/messageType/descr
   2. Target UIDs:
       2.1 Server: Dev = eu-west-1.dev
       2.2 Sensors: uuid-v4 generated, eg: b33eeb9c-dc19-4842-92cb-95a6189c30a1
-  3. Firmware version: 3-level semantic versioning, e.g. 1.3.0 (to ensure protocol compatiability)
+  3. Major firmware version: 3-level semantic versioning, include major version e.g. v0 or v1
   4. Message type: 
       4.1 event
       4.2 command

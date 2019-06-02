@@ -31,7 +31,7 @@
  *    All constants that are env-agnostic should be defined below
  */
 
-const char FIRMWARE_VERSION[] = "0.2.0";
+const char FIRMWARE_VERSION[] = "1.0.0";
 
 // Networking
 const char KEY_SSID[] = "wifiSSID";
@@ -70,6 +70,7 @@ const char KEY_SENSOR_UID[]       = "sensorUID";
 const char KEY_EVENT[]            = "event";
 const char KEY_FIRMWARE_VERSION[] = "firmwareVersion";
 const char KEY_STATE[]            = "state";
+const char KEY_ERROR_CODE[]       = "errorCode";
 const char KEY_MESSAGE[]          = "message";
 const char KEY_DURATION[]         = "duration";
 

@@ -7,6 +7,7 @@
 
 // Local imports
 #include "./src/config/Configuration.h"
+#include "./src/config/ErrorCodes.h"
 #include "./src/networking/WifiInterface.hpp"
 #include "./src/digital-io/GDoorIO.hpp"
 #include "./src/networking/SensorMQTT.hpp"
@@ -32,7 +33,7 @@ void setup() {
   }
   
   wifiInterface.connectToWifi();
-  setupMQTT(false);
+  setupMQTT(!sensorInitialised);
 }
 
 void loop() {
@@ -92,9 +93,9 @@ void messageReceived(char *topic, byte *payload, unsigned int length) {
     bool correctSensorUID = sensorMQTT.verifyTargetUID(payloadCast, &sensorUID);  
 
     if (!correctSensorUID) {
-      std::string prefix("ERROR: Incorrect sensorUID received => ");
+      std::string prefix("Incorrect sensorUID  => ");
       std::string errorMessage = prefix + sensorUID;
-      sensorMQTT.publishError(errorMessage.c_str());
+      sensorMQTT.publishError(ERROR_SENSOR_INCORRECT_TARGET, errorMessage.c_str());
       return;
     }
     

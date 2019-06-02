@@ -22,6 +22,7 @@
 #include "../lib/PubSubClient/PubSubClient.h"
 #include "../lib/ArduinoJSON/ArduinoJson.h"
 #include "../config/Configuration.h"
+#include "../config/ErrorCodes.h"
 #include "../../secrets/AWSIoTSecrets.h"
 #include "../utilities/Utilities.h"
 #include "../digital-io/GDoorIO.hpp"
@@ -41,7 +42,7 @@ class SensorMQTT: public PubSubClient{
         void publishDoorState(); 
         void publishReconnection(int reconnDur);
         void publishHealth();
-        void publishError(const char* message);
+        void publishError(const char* errorCode, const char* message);
         void publishUnknownTypeError(std::string unknownType, std::string identifier);
         bool verifyTargetUID(char *payload, std::string *sensorUID); 
         void deserializeStdPayload(char* payload, std::string *sensorUID); 
