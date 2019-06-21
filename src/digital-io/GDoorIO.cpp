@@ -50,7 +50,7 @@ void GDoorIO::updateDoorState() {
     // Filter signal for full second to remove noisy readings
     int count = 0;
 	for (int i = 0; i < 10; i++) {
-		if (digitalRead(this->doorSensorPin) == HIGH){
+		if (digitalRead(this->doorSensorPin) == LOW){
 			this->setStateToOpen();
             return;
 		}
@@ -86,7 +86,7 @@ void GDoorIO::actuateDoor() {
 // See readme for motivation as to why an interrupt is not used
 void GDoorIO::assessModePin() {
     bool modePinState = digitalRead(this->networkModePin);
-    if (modePinState == LOW) {
+    if (modePinState == HIGH) {
         return;
     }
     
