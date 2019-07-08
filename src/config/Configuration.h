@@ -14,7 +14,7 @@
 #define NODE_DEV 2
 
 // Set ENV here
-#define ENV NODE_DEV
+#define ENV PROD
 
 #if ENV == PROD
     #include "./ProdConfig.h"

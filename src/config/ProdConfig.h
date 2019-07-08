@@ -27,16 +27,16 @@
 
 // Time constants
 #define ACTUATION_PULSE_LENGTH 1500     // miliseconds
-#define MQTT_CONN_TIMEOUT 240           // seconds
+#define MQTT_CONN_TIMEOUT 180           // seconds
 
 // Misc
-// #define SENSOR_UID_LENGTH 36            // E.g: 073f04a4-0b9b-4a00-9b11-89709a3ccd1f
+#define SENSOR_UID_LENGTH 36            // E.g: 073f04a4-0b9b-4a00-9b11-89709a3ccd1f
 
 // Time zone constants
-const int8_t TIME_ZONE = +2;            // UTC+2 => JHB
+const int8_t TIME_ZONE = 1;            // UTC+2 => JHB
 // #define USE_SUMMER_TIME_DST
 
 // Networking
-// const char AWS_IOT_DEVICE_GATEWAY[] = "";
-// const char SERVER_UID[] = "";
+const char SERVER_UID[] = "eu-west-1.dev";
+const char AWS_IOT_DEVICE_GATEWAY[] = "a2rpz6e8hvsfm5-ats.iot.eu-west-1.amazonaws.com";
 const int serverPort = 80;
