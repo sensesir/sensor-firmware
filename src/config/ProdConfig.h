@@ -39,4 +39,6 @@ const int8_t TIME_ZONE = 1;            // UTC+2 => JHB
 // Networking
 const char SERVER_UID[] = "eu-west-1.prod";
 const char AWS_IOT_DEVICE_GATEWAY[] = "a2rpz6e8hvsfm5-ats.iot.eu-west-1.amazonaws.com";
+const char MQTT_CONN_ERR_ENDPOINT[] = "";
+const char API_KEY[] = "";
 const int serverPort = 80;

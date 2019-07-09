@@ -26,6 +26,7 @@
 #include "../../secrets/AWSIoTSecrets.h"
 #include "../utilities/Utilities.h"
 #include "../digital-io/GDoorIO.hpp"
+#include "./SensorApi.hpp"
 
 typedef void (*mqttMsgRecCallback)(char*, byte*, unsigned int);
 
