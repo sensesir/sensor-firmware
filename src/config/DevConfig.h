@@ -39,6 +39,8 @@ const int8_t TIME_ZONE = +2;            // UTC+2 => JHB
 // Networking
 const char AWS_IOT_DEVICE_GATEWAY[] = "anwaqu8y2zf77-ats.iot.eu-west-1.amazonaws.com";
 const char SERVER_UID[] = "eu-west-1.dev";
+const char MQTT_CONN_ERR_ENDPOINT[] = "http://dm071t6ydt31y.cloudfront.net";
+const char API_KEY[] = "8sBkjUhVQ9lZP3uigrpB3e2C66dmtaSaJwC3Mmy7";
 const int serverPort = 80;
 
 // Conditional WiFi setting

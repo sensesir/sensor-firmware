@@ -57,6 +57,7 @@ bool SensorMQTT::connectDeviceGateway() {
     } else {
       Serial.println("MQTT: Failed to connect to AWS IoT Cloud");
       this->pubSubError(this->state());
+      postMQTTConnError();
       return false;
     }
 }
