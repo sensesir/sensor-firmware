@@ -14,6 +14,7 @@
 #include "./src/networking/GDoorServer.hpp"
 #include "./src/models/SensorModel.hpp"
 #include "./src/utilities/Utilities.h"
+#include "./src/networking/SensorApi.hpp"
 
 // Function prototypes
 void messageReceived(char *topic, byte *payload, unsigned int length);
@@ -67,7 +68,8 @@ void setupMQTT(bool firstBoot) {
 void mqttFailureLoop() {
   Serial.println("MAIN: Fatal MQTT connection failure - entering error state");
   GDoorIO::getInstance().networkLEDSetRed();
-  
+  postMQTTConnError();
+
   while(true) {
     // May need: Reset WDT  
     // Waiting for user reset
