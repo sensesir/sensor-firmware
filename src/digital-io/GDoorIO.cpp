@@ -77,7 +77,8 @@ void GDoorIO::setStateToUnknown() {
 }
 
 void GDoorIO::actuateDoor() {
-    Serial.println("DOOR IO: Actuating door");
+    Serial.print("DOOR IO: Actuating door on pin ");
+    Serial.println(relayDriverPin);
     digitalWrite(relayDriverPin, HIGH);
     delay(ACTUATION_PULSE_LENGTH);
     digitalWrite(relayDriverPin, LOW);

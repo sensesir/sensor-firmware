@@ -24,7 +24,7 @@
 #define NETWORK_LED_GREEN 4
 #define NETWORK_LED_BLUE 14
 #define DOOR_SENSOR 13
-#define RELAY_OUT 12
+#define RELAY_OUT 16
 #define NETWORK_MODE 15
 
 // Time constants
