@@ -115,9 +115,11 @@ void handleCommand(std::string command) {
   // String conversion of constants
   std::string actuateStr(SUB_ACTUATE);    // May need to improve this
   std::string healthStr(SUB_HEALTH_PING);
+  std::string OTAupdateStr(SUB_OTA_UPDATE);
   
   if (command == actuateStr) { GDoorIO::getInstance().actuateDoor(); } 
-  else if (command == healthStr) { sensorMQTT.publishHealth(); } 
+  else if (command == healthStr) { sensorMQTT.publishHealth(); }
+  else if (command == OTAupdateStr) { otaUpdate(); }
   else { sensorMQTT.publishUnknownTypeError(command, std::string("command")); }
 }
 
