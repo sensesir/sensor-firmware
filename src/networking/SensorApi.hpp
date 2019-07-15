@@ -6,9 +6,11 @@
 *	Copyright 2019
 */
 
+#include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <hardwareSerial.h>
 #include "../lib/ArduinoJSON/ArduinoJson.h"
 #include "../../secrets/AWSIoTSecrets.h"
 
 void postMQTTConnError();
+void otaUpdate();

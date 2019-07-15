@@ -41,3 +41,37 @@ void postMQTTConnError() {
     // Close connection
     httpReq.end();
 }
+
+void otaUpdate() {
+    WiFiClient client;
+    HTTPClient httpReq;
+
+    Serial.println("SENSOR API: Creating connection to stream firmware binary");
+    httpReq.begin(client, OTA_STREAM_ENDPOINT);
+    httpReq.addHeader("x-api-key", OTA_API_KEY);
+    httpReq.addHeader(KEY_SENSOR_UID, SENSOR_UID);
+
+    // Hit the endpoint
+    int httpCode = httpReq.GET();
+
+    if (httpCode > 0) {
+        // Server has responded 
+        Serial.printf("SENSOR API: Http res code: %d\n", httpCode);
+
+        if (httpCode == 200) {
+            Serial.print("SENSOR API: Starting binary stream of size = ");
+
+            // Get length of payload & create a read buffer 
+            int len = httpReq.getSize();
+            Serial.println(len);
+            uint8_t buff[128] = { 0 };      // Verify that this should be unsigned
+
+        }
+    } 
+    
+    else {
+      Serial.printf("SENSOR API: [HTTP] GET... failed, error: %s\n", httpReq.errorToString(httpCode).c_str());
+    }
+
+    httpReq.end();
+}
