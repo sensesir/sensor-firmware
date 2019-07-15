@@ -91,7 +91,7 @@ bool SensorMQTT::reconnectClientSync() {
 
 bool SensorMQTT::subscribeToTopics() {
   Serial.println("MQTT: Subscribing sensor client to topics");
-  std::vector<const char*> SUBSCRIBE_TOPICS = {SUB_ACTUATE, SUB_HEALTH_PING};
+  std::vector<const char*> SUBSCRIBE_TOPICS = {SUB_ACTUATE, SUB_HEALTH_PING, SUB_OTA_UPDATE};
 
   for (int i=0; i < SUBSCRIBE_TOPICS.size(); i++) {
     char topic[256];
