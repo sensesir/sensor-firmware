@@ -8,6 +8,8 @@
 
 #include "SensorApi.hpp"
 
+std::string hexStr(uint8_t *data, int len);
+
 void postMQTTConnError() {
     Serial.print("SENSOR API: Posting MQTT conn error to server");
 
@@ -49,10 +51,12 @@ void otaUpdate() {
     Serial.println("SENSOR API: Creating connection to stream firmware binary");
     httpReq.begin(client, OTA_STREAM_ENDPOINT);
     httpReq.addHeader("x-api-key", OTA_API_KEY);
-    httpReq.addHeader(KEY_SENSOR_UID, SENSOR_UID);
+    httpReq.addHeader("sensor-uid", SENSOR_UID);
 
     // Hit the endpoint
+    int payloadSize = 0;
     int httpCode = httpReq.GET();
+    bool updateSuccess = false; 
 
     if (httpCode > 0) {
         // Server has responded 
@@ -65,7 +69,33 @@ void otaUpdate() {
             int len = httpReq.getSize();
             Serial.println(len);
             uint8_t buff[128] = { 0 };      // Verify that this should be unsigned
+            
+            /*
+            while (httpReq.connected() && (len > 0 || len == -1)) {
+                // read up to 128 byte
+                int c = stream->readBytes(buff, std::min((size_t)len, sizeof(buff)));
+                // Serial.printf("readBytes: %d\n", c);
+                
+                if (!c) {
+                    // Corrupt connection? Fail?
+                    Serial.println("SENSOR API: Read timeout.");
+                    // break;
+                }
 
+                // write it to Serial
+                // Serial.write(buff, c);
+                payloadSize += c;
+
+                if (len > 0) {
+                    // Not applicable to us, server doesn't send file size... Unless we make it? 
+                    len -= c;
+                }
+
+                // Temp (may cause the stream to flood)
+                std::string hexString = hexStr(buff, sizeof(buff));
+                Serial.println(hexString.c_str());
+            }
+            */
         }
     } 
     
@@ -74,4 +104,40 @@ void otaUpdate() {
     }
 
     httpReq.end();
+    Serial.print("SENSOR API: Completed transaction with payload size = ");
+    Serial.println(payloadSize);
+
+    Serial.print("SENSOR API: Successful update = ");
+    Serial.println(updateSuccess);
+}
+
+void otaUpdateV2() {
+    WiFiClient client;
+    t_httpUpdate_return ret = ESPhttpUpdate.update(client, "http://ec2-34-245-168-70.eu-west-1.compute.amazonaws.com:3000/otaNonStream");
+
+    switch (ret) {
+        case HTTP_UPDATE_FAILED:
+            USE_SERIAL.printf("HTTP_UPDATE_FAILD Error (%d): %s\n", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+            break;
+
+        case HTTP_UPDATE_NO_UPDATES:
+            USE_SERIAL.println("HTTP_UPDATE_NO_UPDATES");
+            break;
+
+        case HTTP_UPDATE_OK:
+            USE_SERIAL.println("HTTP_UPDATE_OK");
+            break;
+    }
+}
+
+
+std::string hexStr(uint8_t *data, int len) {
+    std::stringstream ss;
+    ss<<std::hex;
+
+    for(int i(0);i<len;++i){
+        ss<<(int)data[i];
+    }
+        
+    return ss.str();
 }
