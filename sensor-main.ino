@@ -15,6 +15,7 @@
 #include "./src/models/SensorModel.hpp"
 #include "./src/utilities/Utilities.h"
 #include "./src/networking/SensorApi.hpp"
+#include "./src/utilities/OTAUpdater.hpp"
 
 // Function prototypes
 void messageReceived(char *topic, byte *payload, unsigned int length);
@@ -90,9 +91,9 @@ void messageReceived(char *topic, byte *payload, unsigned int length) {
 
     // Deserialize sensorUID as redundant check for correct target
     std::string sensorUID;
-    char payloadCast[256];
-    byteToCharArray(payload, length, payloadCast);  // Seems a bit pointless, but for ease of argument passing
-    bool correctSensorUID = sensorMQTT.verifyTargetUID(payloadCast, &sensorUID);  
+    char payloadUIDCheck[512];
+    byteToCharArray(payload, length, payloadUIDCheck);  // Required because ArduinoJSON deserialization can't do byte* - only char*
+    bool correctSensorUID = sensorMQTT.verifyTargetUID(payloadUIDCheck, &sensorUID);  
 
     if (!correctSensorUID) {
       std::string prefix("Incorrect sensorUID  => ");
@@ -102,7 +103,9 @@ void messageReceived(char *topic, byte *payload, unsigned int length) {
     }
     
     else if (category == COMMAND) {
-      handleCommand(descriptor);
+      char payloadCharArr[512];
+      byteToCharArray(payload, length, payloadCharArr);
+      handleCommand(descriptor, payloadCharArr);
     }
 
     else {
@@ -111,15 +114,15 @@ void messageReceived(char *topic, byte *payload, unsigned int length) {
     }
 }
 
-void handleCommand(std::string command) {
+void handleCommand(std::string command, char* payload) {
   // String conversion of constants
   std::string actuateStr(SUB_ACTUATE);    // May need to improve this
   std::string healthStr(SUB_HEALTH_PING);
-  std::string OTAupdateStr(SUB_OTA_UPDATE);
+  std::string firmwareUpdateStr(SUB_FIRMWARE_UPDATE);
   
   if (command == actuateStr) { GDoorIO::getInstance().actuateDoor(); } 
   else if (command == healthStr) { sensorMQTT.publishHealth(); }
-  else if (command == OTAupdateStr) { otaUpdate(); }
+  else if (command == firmwareUpdateStr) { handleOTAUpate(payload); }
   else { sensorMQTT.publishUnknownTypeError(command, std::string("command")); }
 }
 
@@ -136,6 +139,16 @@ void reconnectMQTTClient() {
   } else {
     mqttFailureLoop();
   }
+}
+
+void handleOTAUpate(char* payload) {
+  sensorMQTT.disconnect();
+  OTAUpdater *otaUpdate = new OTAUpdater();
+  otaUpdate->updateFirmware(payload); 
+
+  // If the function returns without restarting, it means it failed - publish MQTT message after re-connection
+  reconnectMQTTClient();
+  sensorMQTT.publishError(ERROR_SENSOR_OTA_FAILURE, "OTA update failed");  // TODO: Add more info
 }
 
 

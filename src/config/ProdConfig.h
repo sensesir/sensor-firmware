@@ -41,4 +41,6 @@ const char SERVER_UID[] = "eu-west-1.prod";
 const char AWS_IOT_DEVICE_GATEWAY[] = "a2rpz6e8hvsfm5-ats.iot.eu-west-1.amazonaws.com";
 const char MQTT_CONN_ERR_ENDPOINT[] = "http://d12117zmxbxkni.cloudfront.net";
 const char API_KEY[] = "rZMSuf6dEU6ru3nP554Yy10NbKoB0V0P9UOxFgDL";
+const char OTA_UPDATE_ENDPOINT[] = "";
+const char OTA_API_KEY[] = "";
 const int serverPort = 80;

@@ -53,7 +53,7 @@ const char TOPIC_DELIMITER[] = "/";
 // Subscribe
 const char SUB_ACTUATE[]     = "actuate";
 const char SUB_HEALTH_PING[] = "health";
-const char SUB_OTA_UPDATE[]  = "update";
+const char SUB_FIRMWARE_UPDATE[]  = "firmwareUpdate";
 
 // Publish
 const char PUB_FIRST_BOOT[] = "firstBoot";

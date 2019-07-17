@@ -41,6 +41,8 @@ const char AWS_IOT_DEVICE_GATEWAY[] = "anwaqu8y2zf77-ats.iot.eu-west-1.amazonaws
 const char SERVER_UID[] = "eu-west-1.dev";
 const char MQTT_CONN_ERR_ENDPOINT[] = "http://dm071t6ydt31y.cloudfront.net";
 const char API_KEY[] = "8sBkjUhVQ9lZP3uigrpB3e2C66dmtaSaJwC3Mmy7";
+const char OTA_UPDATE_ENDPOINT[] = "http://ec2-34-245-168-70.eu-west-1.compute.amazonaws.com:3000/otaUpdate";
+const char OTA_API_KEY[] = "878ed9d6-8729-4883-a93f-2ceb10b643ce";
 const int serverPort = 80;
 
 // Conditional WiFi setting
