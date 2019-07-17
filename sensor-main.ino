@@ -26,7 +26,8 @@ SensorMQTT sensorMQTT;
 
 void setup() {
   Serial.begin(BAUD_RATE);
-  Serial.println("Firing up Esp!!");
+  Serial.print("Starting GDoor sensor version => ");
+  Serial.println(FIRMWARE_VERSION);
   GDoorIO::getInstance().initialize();
   bool sensorInitialised = SensorModel::getInstance().sensorDataLoaded;
 

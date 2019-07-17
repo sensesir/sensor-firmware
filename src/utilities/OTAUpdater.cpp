@@ -41,7 +41,7 @@ void OTAUpdater::updateFirmware(char* updateInfo) {
 
     t_httpUpdate_return result = handleUpdate(http, build, version);
 
-    // To use base class method (doesn't allow customization): 
+    // Base class method (doesn't allow customization): 
     // t_httpUpdate_return result = ESPhttpUpdate.update(client, OTA_UPDATE_ENDPOINT);
 
     switch (result) {
@@ -67,7 +67,7 @@ HTTPUpdateResult OTAUpdater::handleUpdate(HTTPClient& http, const char* build, c
 
     // use HTTP/1.0 for update since the update handler not support any transfer Encoding
     http.useHTTP10(true);
-    http.setTimeout(8000);                          // Default - 8000 ? | Could need to change
+    http.setTimeout(8000);                             // Default - 8000 ? | Could need to change
     // http.setFollowRedirects(false);                 // Default - changed
     http.setUserAgent(F("ESP8266-http-Update"));
     http.addHeader(F("x-ESP8266-STA-MAC"), WiFi.macAddress());
@@ -108,10 +108,6 @@ HTTPUpdateResult OTAUpdater::handleUpdate(HTTPClient& http, const char* build, c
         DEBUG_HTTP_UPDATE("[httpUpdate]  - MD5: %s\n", http.header("x-MD5").c_str());
     }
 
-    if(http.hasHeader("x-MD5")) {
-        DEBUG_HTTP_UPDATE("[httpUpdate]  - MD5: %s\n", http.header("x-MD5").c_str());
-    }
-
     DEBUG_HTTP_UPDATE("[httpUpdate] ESP8266 info:\n");
     DEBUG_HTTP_UPDATE("[httpUpdate]  - free Space: %d\n", ESP.getFreeSketchSpace());
     DEBUG_HTTP_UPDATE("[httpUpdate]  - current Sketch Size: %d\n", ESP.getSketchSize());
@@ -122,7 +118,7 @@ HTTPUpdateResult OTAUpdater::handleUpdate(HTTPClient& http, const char* build, c
         if(len > 0) {    
             bool startUpdate = true;
             if (len > (int) ESP.getFreeSketchSpace()) {
-                DEBUG_HTTP_UPDATE("[httpUpdate] FreeSketchSpace to low (%d) needed: %d\n", ESP.getFreeSketchSpace(), len);
+                DEBUG_HTTP_UPDATE("[httpUpdate] FreeSketchSpace too low (%d) needed: %d\n", ESP.getFreeSketchSpace(), len);
                 startUpdate = false;
             }
             
@@ -253,6 +249,11 @@ bool OTAUpdater::streamToFlash(Stream& in, uint32_t size, String md5, int comman
 
     return true;
 }
+/**
+ * Returns vector of C strings with:
+ *  [0] = build
+ *  [1] = version
+ */
 
 std::vector<const char*>* OTAUpdater::deserializeOTAPayload(char* payload) {
   // Serial.printf("OTA UPDATE: Deserializing payload = %s\n", payload);
