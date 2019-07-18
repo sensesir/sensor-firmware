@@ -44,7 +44,7 @@ class GDoorIO {
 
         // Unused exposed pins
         // Reserved pins: 1, 3 [Tx, Rx]
-        std::vector<char> unusedPins = {0, 16};
+        std::vector<char> unusedPins = {2, 4};
 	
         // Methods
         void initialize();

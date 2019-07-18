@@ -93,7 +93,7 @@ void GDoorIO::assessModePin() {
     int count = 0;
     int maxLoop = ((MODE_RESET_HOLD + 1)*1000)/SENSOR_FILTER_DELAY;
     for (int i = 0; i < maxLoop; i++) {    
-        if (digitalRead(this->networkModePin) == LOW) {
+        if (digitalRead(this->networkModePin) == HIGH) {
             break;
         }
 
