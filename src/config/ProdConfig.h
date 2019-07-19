@@ -44,3 +44,11 @@ const char API_KEY[] = "rZMSuf6dEU6ru3nP554Yy10NbKoB0V0P9UOxFgDL";
 const char OTA_UPDATE_ENDPOINT[] = "http://ec2-52-214-149-71.eu-west-1.compute.amazonaws.com:3000/otaUpdate";
 const char OTA_API_KEY[] = "31f76620-3e10-4290-b3d8-2be6f4956484";
 const int serverPort = 80;
+
+// Conditional WiFi setting
+// #define USE_DEV_MODEL_DATA
+
+#ifdef USE_DEV_MODEL_DATA
+const char WIFI_SSID[] = "";
+const char WIFI_PASSWORD[] = "";
+#endif
