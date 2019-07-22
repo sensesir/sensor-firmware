@@ -50,7 +50,7 @@ void GDoorIO::updateDoorState() {
     // Filter signal for full second to remove noisy readings
     int count = 0;
 	for (int i = 0; i < 10; i++) {
-		if (digitalRead(this->doorSensorPin) == LOW){
+		if (digitalRead(this->doorSensorPin) == HIGH){
 			this->setStateToOpen();
             return;
 		}
