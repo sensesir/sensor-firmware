@@ -18,12 +18,12 @@
  *      a) 01: TX Serial
  *      b) 03: RX Serial
  */
-#define NETWORK_LED_RED 5
-#define NETWORK_LED_GREEN 4
-#define NETWORK_LED_BLUE 14
-#define DOOR_SENSOR 13
-#define RELAY_OUT 12
-#define NETWORK_MODE 15
+#define NETWORK_LED_RED 12
+#define NETWORK_LED_GREEN 13
+#define NETWORK_LED_BLUE 15
+#define DOOR_SENSOR 5
+#define RELAY_OUT 16
+#define NETWORK_MODE 14
 
 // Time constants
 #define ACTUATION_PULSE_LENGTH 1500     // miliseconds
@@ -41,6 +41,8 @@ const char AWS_IOT_DEVICE_GATEWAY[] = "anwaqu8y2zf77-ats.iot.eu-west-1.amazonaws
 const char SERVER_UID[] = "eu-west-1.dev";
 const char MQTT_CONN_ERR_ENDPOINT[] = "http://dm071t6ydt31y.cloudfront.net";
 const char API_KEY[] = "8sBkjUhVQ9lZP3uigrpB3e2C66dmtaSaJwC3Mmy7";
+const char OTA_UPDATE_ENDPOINT[] = "http://ec2-34-245-168-70.eu-west-1.compute.amazonaws.com:3000/otaUpdate";
+const char OTA_API_KEY[] = "878ed9d6-8729-4883-a93f-2ceb10b643ce";
 const int serverPort = 80;
 
 // Conditional WiFi setting

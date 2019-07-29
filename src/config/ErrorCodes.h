@@ -11,6 +11,7 @@
 
 const char ERROR_SENSOR_MQTT_CONN[] = "SS001";
 const char ERROR_SENSOR_INCORRECT_TARGET[] = "SS002";
-const char ERROR_SENSOR_JSON[] = "S003";
+const char ERROR_SENSOR_JSON[] = "SS003";
+const char ERROR_SENSOR_OTA_FAILURE[] = "SS004";
 
 #endif

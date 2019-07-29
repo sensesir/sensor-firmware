@@ -31,7 +31,7 @@
  *    All constants that are env-agnostic should be defined below
  */
 
-const char FIRMWARE_VERSION[] = "1.0.0";
+const char FIRMWARE_VERSION[] = "1.1.0";
 
 // Networking
 const char KEY_SSID[] = "wifiSSID";
@@ -53,6 +53,7 @@ const char TOPIC_DELIMITER[] = "/";
 // Subscribe
 const char SUB_ACTUATE[]     = "actuate";
 const char SUB_HEALTH_PING[] = "health";
+const char SUB_FIRMWARE_UPDATE[]  = "firmwareUpdate";
 
 // Publish
 const char PUB_FIRST_BOOT[] = "firstBoot";
