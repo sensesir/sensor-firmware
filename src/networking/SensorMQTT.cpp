@@ -261,7 +261,7 @@ void SensorMQTT::publishRssi() {
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_RSSI);
 
   // Create payload
-  const int capacity = JSON_OBJECT_SIZE(6) + 120; // 3 KV pairs + 120 bytes spare for const input duplication
+  const int capacity = JSON_OBJECT_SIZE(3) + 120; // 3 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
   payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_EVENT] = PUB_RSSI;
