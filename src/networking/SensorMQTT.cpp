@@ -91,7 +91,7 @@ bool SensorMQTT::reconnectClientSync() {
 
 bool SensorMQTT::subscribeToTopics() {
   Serial.println("MQTT: Subscribing sensor client to topics");
-  std::vector<const char*> SUBSCRIBE_TOPICS = {SUB_ACTUATE, SUB_HEALTH_PING, SUB_FIRMWARE_UPDATE};
+  std::vector<const char *> SUBSCRIBE_TOPICS = {SUB_ACTUATE, SUB_HEALTH_PING, SUB_FIRMWARE_UPDATE, SUB_RSSI_REQUEST};
 
   for (int i=0; i < SUBSCRIBE_TOPICS.size(); i++) {
     char topic[256];
@@ -115,16 +115,24 @@ bool SensorMQTT::subscribeToTopics() {
 }
 
 void SensorMQTT::publishBootEvent(bool firstBoot, int connDur) {
+  // Read RSSI and publish for every reset...
+  float rssiRD;
+  rssiRD = WiFi.RSSI();
+  if (rssiRD < -99)
+  {
+    rssiRD = -99;
+  }
   // Create topic
   char topic[256];
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_BOOT);
 
   // Create payload using JSON lib
-  const int capacity = JSON_OBJECT_SIZE(4) + 120;     // 4 KV pairs + 120 bytes spare for const input duplication
+  const int capacity = JSON_OBJECT_SIZE(5) + 120;     // 5 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
   payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_FIRMWARE_VERSION] = FIRMWARE_VERSION; 
   payload[KEY_DURATION] = connDur;
+  payload[KEY_RSSI] = rssiRD;
   if (firstBoot) {
     payload[KEY_EVENT] = PUB_FIRST_BOOT;
   } else {
@@ -236,6 +244,45 @@ void SensorMQTT::publishHealth() {
     serializeJson(payload, Serial);
     Serial.println("");
   } else {
+    Serial.print("MQTT: Failed to publish message to topic: ");
+    Serial.println(topic);
+  }
+}
+
+void SensorMQTT::publishRssi() {
+  float rssiRD;
+  rssiRD = WiFi.RSSI();
+  if (rssiRD < -99)
+  {
+    rssiRD = -99;
+  }
+  // Create topic
+  char topic[256];
+  this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_RSSI);
+
+  // Create payload
+  const int capacity = JSON_OBJECT_SIZE(6) + 120; // 3 KV pairs + 120 bytes spare for const input duplication
+  StaticJsonDocument<capacity> payload;
+  payload[KEY_SENSOR_UID] = SENSOR_UID;
+  payload[KEY_EVENT] = PUB_RSSI;
+  payload[KEY_RSSI] = rssiRD;
+
+  // Serialize JSON into char
+  int jsonLength = measureJson(payload);
+  char serializedPayload[256];
+  serializeJson(payload, serializedPayload);
+
+  bool success = this->publish(topic, serializedPayload);
+  if (success)
+  {
+    Serial.print("MQTT: Published message to topic: ");
+    Serial.println(topic);
+    Serial.print("MQTT: Payload => ");
+    serializeJson(payload, Serial);
+    Serial.println("");
+  }
+  else
+  {
     Serial.print("MQTT: Failed to publish message to topic: ");
     Serial.println(topic);
   }
