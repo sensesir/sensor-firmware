@@ -163,7 +163,7 @@ void checkRSSI() {
   }
   if (rssiRD < -80)
   {
-    sensorMQTT.publishError(ERROR_SENSOR_SIGNAL_STRENGTH_FAILURE, "Insufficient WiFi Signal Strength (<-80dBm signal qaulity)...");
+    sensorMQTT.publishError(ERROR_SENSOR_SIGNAL_STRENGTH_FAILURE, "Inadequate WiFi Signal Strength (<-80dBm)");
   }
   
 }
