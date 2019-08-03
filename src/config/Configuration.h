@@ -54,7 +54,7 @@ const char TOPIC_DELIMITER[] = "/";
 const char SUB_ACTUATE[]          = "actuate";
 const char SUB_HEALTH_PING[]      = "health";
 const char SUB_FIRMWARE_UPDATE[]  = "firmwareUpdate";
-const char SUB_RSSI_REQUEST[]     = "rssiRequest";
+const char SUB_RSSI_REQUEST[]     = "rssi";
 
 // Publish
 const char PUB_FIRST_BOOT[] = "firstBoot";
@@ -76,7 +76,7 @@ const char KEY_STATE[]            = "state";
 const char KEY_ERROR_CODE[]       = "errorCode";
 const char KEY_MESSAGE[]          = "message";
 const char KEY_DURATION[]         = "duration";
-const char KEY_RSSI[]             = "rssiValue";
+const char KEY_RSSI[]             = "rssi";
 
 const char DOOR_STATE_OPEN_STR[]    = "open";
 const char DOOR_STATE_CLOSED_STR[]  = "closed";
