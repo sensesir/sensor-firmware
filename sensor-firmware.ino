@@ -155,7 +155,7 @@ void handleOTAUpate(char* payload) {
 }
 
 void checkRSSI() {
-  float rssiRD;
+  float rssiRD; 
   rssiRD = WiFi.RSSI();
   if (rssiRD < -99)
   {
