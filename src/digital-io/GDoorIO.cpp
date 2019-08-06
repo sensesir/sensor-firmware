@@ -87,7 +87,7 @@ void GDoorIO::actuateDoor() {
 // See readme for motivation as to why an interrupt is not used
 void GDoorIO::assessModePin() {
     bool modePinState = digitalRead(this->networkModePin);
-    if (modePinState == LOW) {
+    if (modePinState == HIGH) {
         return;
     }
     

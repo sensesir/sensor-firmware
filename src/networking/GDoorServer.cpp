@@ -23,6 +23,7 @@ void handleRoot();
 void getSensorUIDEndpoint();
 void postWiFiCredsEndpoint();
 void confirmSensorUIDSent();
+void extractUserUID();
 
 /**
  *  Method sets up an Access point with DNS such that user 
@@ -59,8 +60,10 @@ void initialiseSensorLocally() {
 }
 
 bool credentialsAcquired() {
-    bool wifiCreds = SensorModel::getInstance().wifiCredsAcquired();
-    return wifiCreds && sentSensorUID && sensorUIDSendSuccess;
+    SensorModel *sensorModel = &SensorModel::getInstance();
+    bool wifiCreds = sensorModel->wifiCredsAcquired();
+    bool userUIDAcquired = sensorModel->userUIDAcquired();    
+    return (wifiCreds && sentSensorUID && userUIDAcquired);
 }
 
 void setupDNS() {
@@ -78,6 +81,7 @@ void registerEndpoints(ESP8266WebServer *server) {
     server->on(GET_SENSOR_UID_ENDPOINT, getSensorUIDEndpoint);
     server->on(POST_WIFI_CREDS_ENDPOINT, postWiFiCredsEndpoint);
     server->on(POST_SENSOR_UID_CONFIRM, confirmSensorUIDSent);
+    server->on(POST_USER_UID_ENDPOINT, extractUserUID);
 }
 
 // Define endpoints
@@ -141,4 +145,29 @@ void confirmSensorUIDSent() {
     Serial.println("SERVER: Received confirmation of sensorUID upload");
     server->send(200,"text/plain", "OK");
     sensorUIDSendSuccess = true;
+}
+
+void extractUserUID() {
+    if (server->hasArg("plain") == false) {
+        Serial.println("SERVER: Error - did not receive user UID");
+        server->send(400,"text/plain", "No user UID received");
+        return;
+    }
+
+    const size_t capacity = JSON_OBJECT_SIZE(1) + 120;
+    StaticJsonDocument<capacity> doc;
+    DeserializationError error = deserializeJson(doc, server->arg("plain"));
+
+    // Unpack - being wary of null pointers
+    const char* userUID = doc[KEY_USER_UID];
+    if (!userUID) { 
+        server->send(400, "text/plain", "No user UID received");
+        return;
+    }
+
+    Serial.print("SERVER: Received user UID => ");
+    Serial.println(userUID);
+    SensorModel *sensorModel = &SensorModel::getInstance();
+    sensorModel->setModelUserUID(userUID);
+    server->send(200, "text/plain", "successfully set userUID");
 }

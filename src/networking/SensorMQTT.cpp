@@ -120,13 +120,15 @@ void SensorMQTT::publishBootEvent(bool firstBoot, int connDur) {
   this->generateTopic(topic, SERVER, SERVER_UID, EVENT, PUB_BOOT);
 
   // Create payload using JSON lib
-  const int capacity = JSON_OBJECT_SIZE(4) + 120;     // 4 KV pairs + 120 bytes spare for const input duplication
+  const int capacity = JSON_OBJECT_SIZE(6) + 120;     // 6 KV pairs + 120 bytes spare for const input duplication
   StaticJsonDocument<capacity> payload;
   payload[KEY_SENSOR_UID] = SENSOR_UID;
   payload[KEY_FIRMWARE_VERSION] = FIRMWARE_VERSION; 
   payload[KEY_DURATION] = connDur;
+  payload[KEY_STATE] = GDoorIO::getInstance().gdoor.stateString;
   if (firstBoot) {
     payload[KEY_EVENT] = PUB_FIRST_BOOT;
+    payload[KEY_USER_UID] = SensorModel::getInstance().userUID;
   } else {
     payload[KEY_EVENT] = PUB_BOOT;
   }

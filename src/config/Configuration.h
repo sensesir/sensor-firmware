@@ -14,7 +14,7 @@
 #define NODE_DEV 2
 
 // Set ENV here
-#define ENV PROD
+#define ENV DEV
 
 #if ENV == PROD
     #include "./ProdConfig.h"
@@ -40,6 +40,7 @@ const char ACCESS_POINT_NAME[] = "GarageDoor-jPtF";
 const char GET_SENSOR_UID_ENDPOINT[] = "/getSensorUID";
 const char POST_WIFI_CREDS_ENDPOINT[] = "/postWifiCreds";
 const char POST_SENSOR_UID_CONFIRM[] = "/postSensorUIDConfirm";
+const char POST_USER_UID_ENDPOINT[] = "/postUserUID";
 const char DNS_ADDRESS[] = "gdoorsensor";
 
 // MQTT Topic Pubsub
@@ -68,6 +69,7 @@ const char EVENT_MQTT_CONN_ERROR[] = "mqttConFailure";
 
 // Payload keys
 const char KEY_SENSOR_UID[]       = "sensorUID";
+const char KEY_USER_UID[]         = "userUID";
 const char KEY_EVENT[]            = "event";
 const char KEY_FIRMWARE_VERSION[] = "firmwareVersion";
 const char KEY_STATE[]            = "state";

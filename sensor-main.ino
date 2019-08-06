@@ -72,11 +72,9 @@ void mqttFailureLoop() {
   GDoorIO::getInstance().networkLEDSetRed();
   postMQTTConnError();
 
-  while(true) {
-    // May need: Reset WDT  
-    // Waiting for user reset
-    delay(10);
-  }
+  // Force restart after cool down - try start clean
+  delay(20000);
+  ESP.restart();
 }
 
 void messageReceived(char *topic, byte *payload, unsigned int length) {

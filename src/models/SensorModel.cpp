@@ -36,6 +36,10 @@ void SensorModel::setModelPassword(const char* password) {
     strcpy(this->wifiPassword, password);
 }
 
+void SensorModel::setModelUserUID(const char* uid) {
+    strcpy(this->userUID, uid);
+}
+
 void SensorModel::initializeModel() {
     std::vector< std::vector<std::string> > modelData;
     this->readModelDataFromDisk(&modelData);
@@ -218,6 +222,15 @@ void SensorModel::clearEEPROM() {
 }
 
 bool SensorModel::wifiCredsAcquired() {
-    if (strlen(this->wifiSSID) && strlen(this->wifiPassword)) { return true; }
+    if (strlen(this->wifiSSID)) { 
+        return true; 
+    }
+    return false;
+}
+
+bool SensorModel::userUIDAcquired() {
+    if (strlen(this->userUID)) {
+        return true;
+    }
     return false;
 }

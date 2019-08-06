@@ -30,12 +30,15 @@ class SensorModel {
         bool sensorDataLoaded = false;
         char wifiSSID[50];          // Arbitrary, but surely no one has an SSID/password longer than this?
         char wifiPassword[50];   
+        char userUID[50];
 
         void setModelSSID(const char* ssid);
         void setModelPassword(const char* password); 
+        void setModelUserUID(const char* uid); 
         void writeModelDataToDisk();
         void clearEEPROM();
         bool wifiCredsAcquired();
+        bool userUIDAcquired();
 
     private: 
         // Singleton handling
