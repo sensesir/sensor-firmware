@@ -41,7 +41,7 @@ void setup() {
 
 void loop() {
   bool clientConnected = sensorMQTT.loop();
-
+  checkRSSI();
   // IO Update
   GDoorIO *doorIO = &GDoorIO::getInstance();
   doorIO->assessModePin();
@@ -118,10 +118,12 @@ void handleCommand(std::string command, char* payload) {
   std::string actuateStr(SUB_ACTUATE);    // May need to improve this
   std::string healthStr(SUB_HEALTH_PING);
   std::string firmwareUpdateStr(SUB_FIRMWARE_UPDATE);
-  
+  std::string rssiRequestStr(SUB_RSSI_REQUEST);
+
   if (command == actuateStr) { GDoorIO::getInstance().actuateDoor(); } 
   else if (command == healthStr) { sensorMQTT.publishHealth(); }
   else if (command == firmwareUpdateStr) { handleOTAUpate(payload); }
+  else if (command == rssiRequestStr) { sensorMQTT.publishRssi(); }
   else { sensorMQTT.publishUnknownTypeError(command, std::string("command")); }
 }
 
@@ -150,6 +152,19 @@ void handleOTAUpate(char* payload) {
   sensorMQTT.publishError(ERROR_SENSOR_OTA_FAILURE, "OTA update failed");  // TODO: Add more info
 }
 
+void checkRSSI() {
+  float rssiRD; 
+  rssiRD = WiFi.RSSI();
+  if (rssiRD < -99)
+  {
+    rssiRD = -99;
+  }
+  if (rssiRD < -80)
+  {
+    sensorMQTT.publishError(ERROR_SENSOR_SIGNAL_STRENGTH_FAILURE, "Inadequate WiFi Signal Strength (<-80dBm)");
+  }
+  
+}
 
 
 

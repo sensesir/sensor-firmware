@@ -46,7 +46,8 @@ class SensorMQTT: public PubSubClient{
         void publishError(const char* errorCode, const char* message);
         void publishUnknownTypeError(std::string unknownType, std::string identifier);
         bool verifyTargetUID(char *payload, std::string *sensorUID); 
-        void deserializeStdPayload(char* payload, std::string *sensorUID); 
+        void deserializeStdPayload(char* payload, std::string *sensorUID);
+        void publishRssi();
 
     private:
         WiFiClientSecure *wifiClient; // Needs to be persisted

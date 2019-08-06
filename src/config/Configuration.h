@@ -31,7 +31,7 @@
  *    All constants that are env-agnostic should be defined below
  */
 
-const char FIRMWARE_VERSION[] = "1.1.0";
+const char FIRMWARE_VERSION[] = "1.2.2";
 
 // Networking
 const char KEY_SSID[] = "wifiSSID";
@@ -52,9 +52,10 @@ const char COMMAND[] = "command";
 const char TOPIC_DELIMITER[] = "/";
 
 // Subscribe
-const char SUB_ACTUATE[]     = "actuate";
-const char SUB_HEALTH_PING[] = "health";
+const char SUB_ACTUATE[]          = "actuate";
+const char SUB_HEALTH_PING[]      = "health";
 const char SUB_FIRMWARE_UPDATE[]  = "firmwareUpdate";
+const char SUB_RSSI_REQUEST[]     = "rssi";
 
 // Publish
 const char PUB_FIRST_BOOT[] = "firstBoot";
@@ -63,6 +64,7 @@ const char PUB_DOOR_STATE[] = "doorStateChange";
 const char PUB_RECONNECT[]  = "reconnect";
 const char PUB_HEALTH[]     = "health";
 const char PUB_ERROR[]      = "error";
+const char PUB_RSSI[]       = "rssi";
 
 // Other events
 const char EVENT_MQTT_CONN_ERROR[] = "mqttConFailure";
@@ -76,6 +78,7 @@ const char KEY_STATE[]            = "state";
 const char KEY_ERROR_CODE[]       = "errorCode";
 const char KEY_MESSAGE[]          = "message";
 const char KEY_DURATION[]         = "duration";
+const char KEY_RSSI[]             = "rssi";
 
 const char DOOR_STATE_OPEN_STR[]    = "open";
 const char DOOR_STATE_CLOSED_STR[]  = "closed";
