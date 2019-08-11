@@ -37,7 +37,9 @@ void initialiseSensorLocally() {
     IPAddress subnet(255,255,255,0);                    // Todo: refresher in subnet mask function
     WiFi.softAPConfig(apIP, apIP, subnet);
     WiFi.softAP(ACCESS_POINT_NAME);		// No password
-    setupDNS();
+    
+    // Removing DNS - may be destabilising SoftAP - testing to follow now
+    // setupDNS();
 
 	// Set up server
 	server = new ESP8266WebServer(serverPort);
