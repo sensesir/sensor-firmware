@@ -46,7 +46,7 @@ const char OTA_API_KEY[] = "878ed9d6-8729-4883-a93f-2ceb10b643ce";
 const int serverPort = 80;
 
 // Conditional WiFi setting
-#define USE_DEV_MODEL_DATA
+// #define USE_DEV_MODEL_DATA
 
 #ifdef USE_DEV_MODEL_DATA
 const char WIFI_SSID[] = "";
