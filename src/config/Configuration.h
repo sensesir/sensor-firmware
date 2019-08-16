@@ -31,7 +31,7 @@
  *    All constants that are env-agnostic should be defined below
  */
 
-const char FIRMWARE_VERSION[] = "1.2.3";
+const char FIRMWARE_VERSION[] = "1.2.4";
 
 // Networking
 const char KEY_SSID[] = "wifiSSID";
