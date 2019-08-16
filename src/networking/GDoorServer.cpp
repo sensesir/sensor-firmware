@@ -33,13 +33,16 @@ void extractUserUID();
 void initialiseSensorLocally() {
 	Serial.println("SERVER: Creating access point");
 	GDoorIO::getInstance().networkLEDSetYellow();
-	IPAddress apIP(10, 10, 10, 1);                      // Todo: research if this will cause any collisions
+	
+    // Set up WiFi mode [Improve AP stability - no dual STA mode]
+    ESP.eraseConfig();
+    WiFi.mode(WIFI_AP);
+    
+    IPAddress apIP(10, 10, 10, 1);                      // Todo: research if this will cause any collisions
     IPAddress subnet(255,255,255,0);                    // Todo: refresher in subnet mask function
     WiFi.softAPConfig(apIP, apIP, subnet);
     WiFi.softAP(ACCESS_POINT_NAME);		// No password
-    
-    // Removing DNS - may be destabilising SoftAP - testing to follow now
-    // setupDNS();
+    WiFi.printDiag(Serial);
 
 	// Set up server
 	server = new ESP8266WebServer(serverPort);
